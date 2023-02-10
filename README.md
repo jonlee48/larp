@@ -1,2 +1,2 @@
 # larp
-lame 🍑 rendering pipeline
+lame :peach: rendering pipeline
