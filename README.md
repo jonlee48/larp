@@ -1,2 +1,2 @@
 # larp
-lame :peach: rendering pipeline
+lame :speak_no_evil: rendering pipeline
