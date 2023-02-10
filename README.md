@@ -21,4 +21,5 @@ g++ hello_world.cpp -w -lSDL2 -o hello_world
 ## Resources
 - [Simple DirectMedia Layer (SDL Wiki)](https://wiki.libsdl.org/SDL2/FrontPage)
 - [SDL Dynamic API](https://github.com/libsdl-org/SDL/blob/main/docs/README-dynapi.md)
+- [SDL Tutorials](http://lazyfoo.net/tutorials/SDL/index.php)
 - [X11 forwarding on WSL2](https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2)
