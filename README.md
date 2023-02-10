@@ -1,5 +1,5 @@
 # larp
-lame :speak_no_evil: rendering pipeline - a scratch built 3D rendering pipeline using only Simple DirectMedia Layer (SDL).
+lame :speak_no_evil: rendering pipeline - a scratch built 3D rendering pipeline using only c++ and Simple DirectMedia Layer (SDL).
 
 ## Installation
 First install the SDL library to provide low level access to the keyboard, mouse, and display.
