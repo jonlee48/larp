@@ -1,6 +1,6 @@
 # OBJ files to compile as part of the project
 #OBJS    = $(wildcard *.c)
-OBJS    = hello_world.cpp
+OBJS    = larp.cpp
 CC      = g++
 
 # -w supress all warnings
@@ -9,9 +9,13 @@ CFLAGS  = -w
 # libaries we're linking against
 LFLAGS  = -lSDL2
 
-BIN = hello_world
+BIN = larp.bin
 
-# Targets (requires real <TAB> indentation)
-all : $(OBJS)
+# Targets (requires <TAB> indentation)
+all: $(OBJS)
 	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(BIN)
+	./$(BIN)
+
+clean:
+	rm -rf $(BIN)
 

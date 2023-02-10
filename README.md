@@ -14,8 +14,8 @@ Then compile and run the code.
 ```
 git clone git@github.com:jonlee48/larp.git
 cd larp
-g++ hello_world.cpp -w -lSDL2 -o hello_world
-./hello_world
+make
+./larp.bin
 ```
 
 ## Resources
@@ -23,3 +23,4 @@ g++ hello_world.cpp -w -lSDL2 -o hello_world
 - [SDL Dynamic API](https://github.com/libsdl-org/SDL/blob/main/docs/README-dynapi.md)
 - [SDL Tutorials](http://lazyfoo.net/tutorials/SDL/index.php)
 - [X11 forwarding on WSL2](https://stackoverflow.com/questions/61110603/how-to-set-up-working-x11-forwarding-on-wsl2)
+- [Syncing HW Clock on WSL2](https://askubuntu.com/questions/1096930/sudo-apt-update-error-release-file-is-not-yet-valid)
