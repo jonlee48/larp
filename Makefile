@@ -1,5 +1,6 @@
 # Compile and link FILES into executable BIN
 FILES = $(wildcard *.cpp)
+UTILS = $(wildcard utils/*.cpp)
 BIN = larp
 
 # Compile and link SAMPLE_FILES
@@ -30,7 +31,7 @@ bin/%: samples/%.cpp
 	$(CC) $< $(CFLAGS) $(LFLAGS) -o $@  
 
 # Create executable BIN 
-$(BIN): $(FILES)
+$(BIN): $(FILES) $(UTILS)
 	@echo "Compiling executable..."
 	$(CC) $^ $(CFLAGS) $(LFLAGS) -o $@  
 

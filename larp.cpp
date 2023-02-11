@@ -4,6 +4,7 @@
 #include <string>
 #include <cmath>
 #include "larp.h"
+#include "utils/mat4.h"
 
 // Constants
 const int SCREEN_WIDTH = 640;
@@ -94,11 +95,18 @@ int main(int argc, char* args[])
     }
     else 
     {
+        // matrix test
+        mat4 a = mat4 ({1,1,0,0,1,1,0,0,0,0,1,0,0,0,0,1});
+        mat4 b = mat4({0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15});
+        a * b;
+
+
+
         // Keep the window alive
         SDL_Event e; 
         bool quit = false; 
 
-        Uint32 last_time = SDL_GetTicks();
+        //Uint32 last_time = SDL_GetTicks();
 
         while (!quit) 
         {
@@ -139,9 +147,10 @@ int main(int argc, char* args[])
             SDL_RenderPresent(g_renderer);
 
             SDL_Delay(1000/FPS);
-            Uint32 current_time = SDL_GetTicks();
-            printf("Time: %d\n", current_time-last_time);
-            last_time = current_time;
+            //Uint32 current_time = SDL_GetTicks();
+            //Uint32 diff = current_time - last_time;
+            //printf("Time: %d\n", diff);
+            //last_time = current_time;
         }
 	}
 
