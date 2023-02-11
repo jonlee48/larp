@@ -1,21 +1,39 @@
-# OBJ files to compile as part of the project
-#OBJS    = $(wildcard *.c)
-OBJS    = larp.cpp
+# Compile and link FILES into executable BIN
+FILES = $(wildcard *.cpp)
+BIN = larp
+
+# Compile and link SAMPLE_FILES
+# Define BINS using patten substitution
+SAMPLE_FILES = $(wildcard samples/*.cpp)
+SAMPLE_BINS  = $(sort $(patsubst %.cpp,%.bin,$(SAMPLE_FILES))) 
+
+# Compiler and compiler flags
 CC      = g++
+CFLAGS  = -Wall
 
-# -w supress all warnings
-CFLAGS  = -w
-
-# libaries we're linking against
+# Linker flag to link with SDL2 library
 LFLAGS  = -lSDL2
 
-BIN = larp.bin
+# Target: prereqs 
+# <TAB> rules requires indentation
 
-# Targets (requires <TAB> indentation)
-all: $(OBJS)
-	$(CC) $(OBJS) $(CFLAGS) $(LFLAGS) -o $(BIN)
-	./$(BIN)
+# `make` runs the first rule `all` when no target is specified
+# `all` has no commands, except to run the BIN and SAMPLE_BINS 
+# rules when those files are missing or have changed (newer timestamp than `all`)
+all: $(SAMPLE_BINS) $(BIN)
+
+# Generate the SAMPLE_BINS using automatic variables
+# i.e. CC CFLAGS LFLAGS %.cpp -o %.bin
+%.bin: %.cpp
+	@echo "Compiling samples..."
+	$(CC) $< $(CFLAGS) $(LFLAGS) -o $@  
+
+# Create executable BIN 
+$(BIN): $(FILES)
+	@echo "Compiling executable..."
+	$(CC) $^ $(CFLAGS) $(LFLAGS) -o $@  
 
 clean:
-	rm -rf $(BIN)
+	rm -rf $(BIN) $(SAMPLE_BINS) 
 
+.PHONY: all clean
