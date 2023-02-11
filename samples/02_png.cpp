@@ -2,12 +2,12 @@
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
-#include "02_texture.h"
+#include "02_png.h"
 
 // Constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-const char *WINDOW_NAME = "Texture Sample";
+const char *WINDOW_NAME = "PNG Sample";
 
 // The window we'll be rendering to
 SDL_Window *g_window = NULL;
@@ -65,7 +65,6 @@ bool load_media(void)
 
     // Load splash image
     std::string splash_image_path = "assets/jl_logo.png";
-    //std::string splash_image_path = "assets/loaded.png";
     g_splash_image = load_surface(splash_image_path);
     if (g_splash_image == NULL) 
     {

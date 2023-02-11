@@ -20,11 +20,12 @@ make
 
 You can also run the samples.
 
-- `./01_window.bin` Creates a window and displays an image.
-- `./02_texture.bin` Display an image as a texture with HW acceleration.
-
+- `./01_bmp` Display an image from bmp format.
+- `./02_png` Display an image from png format.
+- `./03_texture` Display an image as a texture with HW acceleration. Kinda buggy when dragging windows. Had to put rendering in event loop. I think it's related to this [issue](https://github.com/libsdl-org/SDL/issues/1059#issuecomment-793116234).
 
 ## Resources
+
 - [Simple DirectMedia Layer (SDL Wiki)](https://wiki.libsdl.org/SDL2/FrontPage)
 - [SDL Dynamic API](https://github.com/libsdl-org/SDL/blob/main/docs/README-dynapi.md)
 - [SDL Tutorials](http://lazyfoo.net/tutorials/SDL/index.php)

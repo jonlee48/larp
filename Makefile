@@ -5,7 +5,7 @@ BIN = larp
 # Compile and link SAMPLE_FILES
 # Define BINS using patten substitution
 SAMPLE_FILES = $(wildcard samples/*.cpp)
-SAMPLE_BINS  = $(sort $(patsubst %.cpp,%.bin,$(SAMPLE_FILES))) 
+SAMPLE_BINS  = $(sort $(patsubst %.cpp,%,$(SAMPLE_FILES))) 
 
 # Compiler and compiler flags
 CC      = g++
@@ -24,7 +24,7 @@ all: $(SAMPLE_BINS) $(BIN)
 
 # Generate the SAMPLE_BINS using automatic variables
 # i.e. CC CFLAGS LFLAGS %.cpp -o %.bin
-%.bin: %.cpp
+%: %.cpp
 	@echo "Compiling samples..."
 	$(CC) $< $(CFLAGS) $(LFLAGS) -o $@  
 

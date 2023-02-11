@@ -1,12 +1,12 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <string>
-#include "01_window.h"
+#include "01_bmp.h"
 
 // Constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-const char *WINDOW_NAME = "Window Sample";
+const char *WINDOW_NAME = "BMP Sample";
 
 // The window we'll be rendering to
 SDL_Window *g_window = NULL;
