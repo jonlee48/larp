@@ -2,12 +2,16 @@
 #include <stdio.h>
 #include <assert.h>
 
-mat4::mat4(float diagonal) {
-	for (int i = 0; i < 16; i++) {
-		if (i % 5 == 0) {
+mat4::mat4(float diagonal) 
+{
+	for (int i = 0; i < 16; i++) 
+	{
+		if (i % 5 == 0) 
+		{
 			mat[i] = diagonal;
 		}
-		else {
+		else 
+		{
 			mat[i] = 0;
 		}
 	}
@@ -16,7 +20,8 @@ mat4::mat4(float diagonal) {
 mat4::mat4(float e0, float e1, float e2, float e3, 
            float e4, float e5, float e6, float e7, 
            float e8, float e9, float e10, float e11, 
-           float e12, float e13, float e14, float e15) {
+           float e12, float e13, float e14, float e15) 
+{
 	mat[0] = e0;
 	mat[1] = e1;
 	mat[2] = e2;
@@ -35,16 +40,19 @@ mat4::mat4(float e0, float e1, float e2, float e3,
 	mat[15] = e15;
 }
 
-float mat4::operator [](int index) const {
+float mat4::operator [](int index) const 
+{
 	assert(index >= 0 && index < 16);
 	return mat[index];
 }
-float& mat4::operator [](int index) {
+float& mat4::operator [](int index) 
+{
 	assert(index >= 0 && index < 16);
 	return mat[index];
 }
 
-mat4 mat4::operator *(const mat4& m) const {
+mat4 mat4::operator *(const mat4& m) const 
+{
 	mat4 result(0);
 
 	int result_index = 0;

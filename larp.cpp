@@ -5,6 +5,7 @@
 #include <cmath>
 #include "larp.h"
 #include "utils/mat4.h"
+#include "utils/vec3.h"
 
 // Constants
 const int SCREEN_WIDTH = 640;
@@ -94,11 +95,27 @@ int main(int argc, char* args[])
         printf("Failed to initialize\n");
     }
     else 
+    
     {
         // matrix test
+        /*
         mat4 a = mat4 ({1,1,0,0,1,1,0,0,0,0,1,0,0,0,0,1});
         mat4 b = mat4({0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15});
         a * b;
+        */
+       
+        // vector test
+        /*
+        vec3 a = vec3(1,2,3);
+        vec3 b = 5*a;
+        vec3 c = a*2;
+        c.set(2,4,6);
+        //vec3 d = -c;
+        //printf("x: %f\n", c.x);
+        //c *=0.5;
+        float dot = b.dot(c);
+        printf("dot: %f\n", dot);
+        */
 
 
 
