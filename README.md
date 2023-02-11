@@ -3,22 +3,25 @@ lame :speak_no_evil: rendering pipeline - a scratch built 3D rendering pipeline 
 
 ## Installation
 First install the SDL library to provide low level access to the keyboard, mouse, and display.
-```
+
+```bash
 sudo apt update
 sudo apt install libsdl2-dev
 ```
 
 Then compile and run the code.
-```
+
+```bash
 git clone git@github.com:jonlee48/larp.git
 cd larp
 make
 ./larp
 ```
 
-You can also run the samples
+You can also run the samples.
 
 - `./01_window.bin` Creates a window and displays an image.
+- `./02_texture.bin` Display an image as a texture with HW acceleration.
 
 
 ## Resources

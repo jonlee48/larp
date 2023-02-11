@@ -12,7 +12,7 @@ CC      = g++
 CFLAGS  = -Wall
 
 # Linker flag to link with SDL2 library
-LFLAGS  = -lSDL2
+LFLAGS  = -lSDL2 -lSDL2_image
 
 # Target: prereqs 
 # <TAB> rules requires indentation

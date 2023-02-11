@@ -1,12 +1,13 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
-#include "01_window.h"
+#include "02_texture.h"
 
 // Constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-const char *WINDOW_NAME = "Window Sample";
+const char *WINDOW_NAME = "Texture Sample";
 
 // The window we'll be rendering to
 SDL_Window *g_window = NULL;
@@ -39,8 +40,18 @@ bool init(void)
 		}
 		else 
         {
-			// Get window surface
-			g_screen_surface = SDL_GetWindowSurface(g_window);
+            // Initialize PNG loading
+            int img_flags = IMG_INIT_PNG;
+            if (!(IMG_Init(img_flags) & img_flags))
+            {
+                printf("SDL_image could not initialize. SDL_image Error: %s\n", IMG_GetError());
+                success = false;
+            }
+            else 
+            {
+                // Get window surface
+                g_screen_surface = SDL_GetWindowSurface(g_window);
+            }
         }
     }
 
@@ -53,11 +64,12 @@ bool load_media(void)
     bool success = true;
 
     // Load splash image
-    std::string splash_image_path = "assets/lena.bmp";
-    g_splash_image = SDL_LoadBMP(splash_image_path.c_str());
+    std::string splash_image_path = "assets/jl_logo.png";
+    //std::string splash_image_path = "assets/loaded.png";
+    g_splash_image = load_surface(splash_image_path);
     if (g_splash_image == NULL) 
     {
-        printf("Unable to load image %s! SDL Error: %s\n", splash_image_path.c_str(), SDL_GetError());
+        printf("Failed to load PNG image\n");
         success = false;
     }
 
@@ -76,11 +88,38 @@ void close(void)
     g_window = NULL;
 
 	// Quit SDL subsystems
+    IMG_Quit();
 	SDL_Quit();
 }
 
+SDL_Surface *load_surface(std::string path)
+{
+    // Final optimized image
+    SDL_Surface *optimized_surface = NULL;
 
-int main(int argc, char* args[]) 
+    // Load image at path
+    SDL_Surface *loaded_surface = IMG_Load(path.c_str());
+    if (loaded_surface == NULL)
+    {
+        printf("Unable to load image %s. SDL_image Error: %s\n", path.c_str(), IMG_GetError());
+    }
+    else
+    {
+        // Convert surface to screen format
+        optimized_surface = SDL_ConvertSurface(loaded_surface, g_screen_surface->format, 0);
+        if (optimized_surface == NULL)
+        {
+            printf("Unable to optimize image %s. SDL Error %s\n", path.c_str(), SDL_GetError());
+        }
+
+        // Get rid of old loaded surface
+        SDL_FreeSurface(loaded_surface);
+    }
+    return optimized_surface;
+}
+
+
+int main(int argc, char* args[])
 {
     // Start up SDL and create window
     if (!init())
@@ -94,15 +133,7 @@ int main(int argc, char* args[])
             printf("Failed to load media\n");
         }
         else {
-			//Fill the surface white
-			SDL_FillRect(g_screen_surface, NULL, SDL_MapRGB(g_screen_surface->format, 0xFF, 0xFF, 0xFF));
-	
-            // Apply the image
-            SDL_BlitSurface(g_splash_image, NULL, g_screen_surface, NULL);
 
-            // Update the surface (from back buffer)
-            SDL_UpdateWindowSurface(g_window);
-		
             // Keep the window alive
             SDL_Event e; 
             bool quit = false; 
@@ -116,8 +147,17 @@ int main(int argc, char* args[])
                         quit = true;
                     }
                 }
+
+                // Apply the PNG image
+                SDL_BlitSurface(g_splash_image, NULL, g_screen_surface, NULL);
+
+                // Update the surface (from back buffer)
+                SDL_UpdateWindowSurface(g_window);
+
             }
-		}
+	
+		
+	}
 	}
 
     // Free resources and close SDL
