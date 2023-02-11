@@ -2,7 +2,7 @@
 
 class mat4 
 {
-private:
+public:
 	float mat[16];
 
 public:

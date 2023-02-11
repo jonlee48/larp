@@ -1,7 +1,7 @@
 #pragma once
 
 class vec3 {
-private:
+public:
 	float x, y, z;
 
 public:

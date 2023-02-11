@@ -1,7 +1,7 @@
 #include "vec3.h"
 #include <assert.h>
-#include <cmath>
 #include <stdio.h>
+#include <cmath>
 
 vec3::vec3() 
 {
