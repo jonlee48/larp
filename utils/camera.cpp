@@ -10,16 +10,16 @@ mat4 Camera::GetViewMatrix()
     vec3 U = right;
     vec3 V = up;
     mat4 R(
-        U.x, V.x, N.x, 0.0f,
-        U.y, V.y, N.y, 0.0f,
-        U.z, V.z, N.z, 0.0f,
+        U.x, U.y, U.z, 0.0f,
+        V.x, V.y, V.z, 0.0f,
+        N.x, N.y, N.z, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     );
     mat4 T(
-        1.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        -C.x, -C.y, -C.z, 1.0f
+        1.0f, 0.0f, 0.0f, -C.x,
+        0.0f, 1.0f, 0.0f, -C.y,
+        0.0f, 0.0f, 1.0f, -C.z,
+        0.0f, 0.0f, 0.0f, 1.0f
     );
     return R*T;
 }
