@@ -1,8 +1,9 @@
 #include "larp.h"
 #include "utils/mat4.h"
 #include "utils/vec3.h"
+#include "utils/model.h"
+#include "utils/camera.h"
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <string>
 #include <cmath>
@@ -10,14 +11,17 @@
 // Constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
-const char *WINDOW_NAME = "Geometry Sample";
+const char *WINDOW_NAME = "Perspective Vector Display System";
 const int FPS = 60;
 
-// The window we'll be rendering to
-SDL_Window *g_window = NULL;
-	
-// The window renderer
-SDL_Renderer *g_renderer = NULL;
+// Globals
+SDL_Window *g_window = NULL;        // The window we'll be rendering to
+SDL_Renderer *g_renderer = NULL;    // The window renderer
+
+// Scene
+Camera g_camera;    // Camera
+Model g_house;
+
 
 bool init(void)
 {
@@ -46,7 +50,7 @@ bool init(void)
 		}
 		else 
         {
-            // Crreate renderer for window
+            // Create renderer for window
             g_renderer = SDL_CreateRenderer(g_window, -1, SDL_RENDERER_ACCELERATED);
             if (g_renderer == NULL)
             {
@@ -57,21 +61,12 @@ bool init(void)
             {
                 // Initialize renderer color
                 SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-
-                // Initialize PNG loading
-                int img_flags = IMG_INIT_PNG;
-                if (!(IMG_Init(img_flags) & img_flags))
-                {
-                    printf("SDL_image could not initialize. SDL_image Error: %s\n", IMG_GetError());
-                    success = false;
-                }
             }
         }
     }
 
     return success;
 }
-
 
 void end(void) 
 {
@@ -82,10 +77,33 @@ void end(void)
     g_renderer = NULL;
 
 	// Quit SDL subsystems
-    IMG_Quit();
 	SDL_Quit();
 }
 
+bool initScene()
+{
+    bool success = true;
+
+    // Camera parameters
+    vec3 look_at(0,0,0);
+    vec3 position(0,1,-1);
+    float aspect_ratio = SCREEN_WIDTH/SCREEN_HEIGHT;
+    float fov_y = 120;
+    float z_near = -2;
+    float z_far = -40;
+
+    // Set up the camera
+    g_camera = Camera(look_at, position, aspect_ratio, fov_y, z_near, z_far);
+
+    // Load objects
+    g_house = Model();
+    if (!g_house.LoadModel("assets/dfiles/house.d"))
+    {
+        printf("Error loading model.\n");
+        bool success = false;
+    }
+    return success;
+}
 
 int main(int argc, char* args[])
 {
@@ -95,31 +113,11 @@ int main(int argc, char* args[])
         printf("Failed to initialize\n");
     }
     else 
-    
     {
-        // matrix test
-        /*
-        mat4 a = mat4 ({1,1,0,0,1,1,0,0,0,0,1,0,0,0,0,1});
-        mat4 b = mat4({0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15});
-        a * b;
-        */
-       
-        // vector test
-        /*
-        vec3 a = vec3(1,2,3);
-        vec3 b = 5*a;
-        vec3 c = a*2;
-        c.set(2,4,6);
-        //vec3 d = -c;
-        //printf("x: %f\n", c.x);
-        //c *=0.5;
-        float dot = b.dot(c);
-        printf("dot: %f\n", dot);
-        */
+        // Setup the scene
+        initScene();
 
-
-
-        // Keep the window alive
+        // Begin the event loop
         SDL_Event e; 
         bool quit = false; 
 
@@ -139,26 +137,18 @@ int main(int argc, char* args[])
             SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
             SDL_RenderClear(g_renderer);
 
-            //Render red filled quad
-            SDL_Rect fillRect = {SCREEN_WIDTH/4, SCREEN_HEIGHT/4, SCREEN_WIDTH/2, SCREEN_HEIGHT/2};
-            SDL_SetRenderDrawColor(g_renderer, 0xFF, 0x00, 0x00, 0xFF );		
-            SDL_RenderFillRect(g_renderer, &fillRect);
-
-            //Render green outlined quad
-            SDL_Rect outlineRect = {SCREEN_WIDTH/6, SCREEN_HEIGHT/6, SCREEN_WIDTH*2/3, SCREEN_HEIGHT*2/3};
-            SDL_SetRenderDrawColor(g_renderer, 0x00, 0xFF, 0x00, 0xFF);
-            SDL_RenderDrawRect(g_renderer, &outlineRect);
-            
-            //Draw blue horizontal line
+            // Redraw models
             SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xFF, 0xFF);
-            SDL_RenderDrawLine(g_renderer, 0, SCREEN_HEIGHT/2, SCREEN_WIDTH, SCREEN_HEIGHT/2);
+            g_house.DrawEdges(g_camera, g_renderer);
 
             //Draw vertical line of yellow dots
+            /*
             SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0x00, 0xFF);
             for(int i = 0; i < SCREEN_HEIGHT; i += 4)
             {
                 SDL_RenderDrawPoint(g_renderer, SCREEN_WIDTH/2, i);
             }
+            */
 
             //Update screen
             SDL_RenderPresent(g_renderer);

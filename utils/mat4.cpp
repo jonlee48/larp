@@ -63,8 +63,12 @@ mat4 mat4::operator *(const mat4& m) const
 			float sum = 0;
 			for (size_t k = 0; k < 4; k++)
 			{
-				int m1_row = i * 4 + k;
-				int m2_col = j + k * 4;
+				// TODO: Are these backwards??
+				int m1_row = j + k * 4;
+				int m2_col = i * 4 + k;
+				// I think it should be updated to this:
+				//int m1_row = i * 4 + k;
+				//int m2_col = j + k * 4;
 				sum += (mat[m1_row] * m[m2_col]);
 				printf("i: %d, j: %d, m1_row: %d, m2_col: %d\n", (int)i, (int)j, m1_row, m2_col);
 			}

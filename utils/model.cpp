@@ -101,10 +101,30 @@ bool Model::LoadModel(const char* path)
 // Render Model
 //=============================================
 
-void Model::DrawEdges() {
-    // calc model matrix by applying transformation matrices
+void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
+    // Apply transformation matrices to get from
+    // Model -> World -> Screen 
+
+    // Calculate transformation matrix
     mat4 model_matrix = translate_matrix * rotate_matrix * scale_matrix;
-    mat4 view_matrix(1);
+    mat4 view_matrix = camera.GetViewMatrix();
+    mat4 perspective_matrix = camera.GetPerspectiveMatrix();
+    mat4 model_view_matrix = perspective_matrix * view_matrix * model_matrix;
+
+    for (unsigned int i = 0; i < faces.size(); i++) {
+        for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
+            int p0 = faces[i].indices[k];
+            int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
+
+            vec3 p0 = verts[p0]
+            
+            SDL_RenderDrawLine(renderer,,,,);
+            glVertex3fv(verts[p0].ptr());
+            glVertex3fv(verts[p1].ptr());
+            
+        }
+    }
+
 }
 
 //=============================================

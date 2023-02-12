@@ -1,6 +1,8 @@
 #pragma once
 #include "mat4.h"
 #include "vec3.h"
+#include "camera.h"
+#include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <vector>
@@ -52,7 +54,7 @@ public:
     //=============================================
     // Render Model
     //=============================================
-    void DrawEdges();
+    void DrawEdges(Camera &camera, SDL_Renderer *renderer);
 
     void DrawEdges() {
         glPushMatrix();
