@@ -35,4 +35,22 @@ mat4 Camera::GetPerspectiveMatrix()
         0.0f, 0.0f, f/(f-d), -d*f/(f-d),
         0.0f, 0.0f, 0.0f, 1.0f
     );
+    return pers;
 }
+
+/*
+void Camera::setCamera(const vec3 &look_at, const vec3 &position, float aspect_ratio, float fov_y, float z_near, float z_far) {
+        // Set camera position and what it is looking at
+        this->look_at = look_at;
+        this->position = position;
+
+        this->front = (position - look_at).normalize();
+        this->right = (front.cross(world_up)).normalize();
+        this->up = (right.cross(front)).normalize();
+
+        this->aspect_ratio = aspect_ratio;
+        this->fov_y = fov_y;
+        this->z_near = z_near;
+        this->z_far = z_far;
+    }
+*/

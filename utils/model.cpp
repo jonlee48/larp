@@ -1,4 +1,6 @@
 #include "model.h"
+#include "vec4.h"
+#include "vec3.h"
 
 //=============================================
 // Load Model
@@ -75,7 +77,7 @@ bool Model::LoadModel(const char* path)
         for (size_t j = 0; j < numFaces; j++) {
             // loop through all indices of the face to check if the vertex is in it
             for (size_t k = 0; k < faces[j].indices.size(); k++) {
-                if (faces[j].indices[k] == i) {
+                if ((unsigned int)faces[j].indices[k] == i) {
                     faces_index.push_back(j);
                 }
             }
@@ -116,12 +118,10 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
             int p0 = faces[i].indices[k];
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
 
-            vec3 p0 = verts[p0]
-            
-            SDL_RenderDrawLine(renderer,,,,);
-            glVertex3fv(verts[p0].ptr());
-            glVertex3fv(verts[p1].ptr());
-            
+            vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
+            vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
+
+            SDL_RenderDrawLine(renderer,h0.x,h0.y,h1.x,h1.y);
         }
     }
 

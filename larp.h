@@ -9,7 +9,13 @@ bool init(void);
 /**
  * Setup scene
  */
-bool initScene(void);
+void initScene(void);
+
+/**
+ * Render scene
+ */
+void renderScene(void);
+
 
 
 /**

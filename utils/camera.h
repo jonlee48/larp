@@ -27,27 +27,30 @@ public:
     float z_far;        // Far clipping plane
 
 public:
-    Camera(const vec3 &look_at, const vec3 &position, float aspect_ratio, float fov_y, float z_near, float z_far) {
-        // Set camera position and what it is looking at
-        this->look_at = look_at;
-        this->position = position;
+    Camera() {
+        look_at= vec3();
+        position = vec3(0.0f,1.0f,1.0f);
+        world_up = vec3(0.0f,1.0f,0.0f);
 
-        this->front = (position - look_at).normalize();
-        this->right = (front.cross(world_up)).normalize();
-        this->up = (right.cross(front)).normalize();
+        front = (position - look_at).normalize();
+        right = (front.cross(world_up)).normalize();
+        up = (right.cross(front)).normalize();
 
-        this->aspect_ratio = aspect_ratio;
-        this->fov_y = fov_y;
-        this->z_near = z_near;
-        this->z_far = z_far;
+        aspect_ratio = 800.0/600.0;
+        fov_y = 45;
+        z_near = -2;
+        z_far = -40;
+
     }
 
     ~Camera() {
     }
 
-    //bool UpdateOrientation(float yaw, float pitch);
-    //bool UpdateLookAt(vec3 &look_at);
-    //bool UpdatePosition(vec3 &position);
+
+    //void setCamera(const vec3 &look_at, const vec3 &position, float aspect_ratio, float fov_y, float z_near, float z_far);
+    // bool UpdateOrientation(float yaw, float pitch);
+    // bool UpdateLookAt(vec3 &look_at);
+    // bool UpdatePosition(vec3 &position);
 
     // Returns camera matrix (world to camera transformation)
     mat4 GetViewMatrix();
