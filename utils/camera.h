@@ -29,17 +29,17 @@ public:
 public:
     Camera() {
         look_at= vec3();
-        position = vec3(0.0f,1.0f,1.0f);
+        position = vec3(5.0f,0.0f,0.0f);
         world_up = vec3(0.0f,1.0f,0.0f);
 
         front = (position - look_at).normalize();
-        right = (front.cross(world_up)).normalize();
-        up = (right.cross(front)).normalize();
+        right = (world_up.cross(front)).normalize();
+        up = (front.cross(right)).normalize();
 
         aspect_ratio = 800.0/600.0;
         fov_y = 45;
-        z_near = -2;
-        z_far = -40;
+        z_near = 0.1;
+        z_far = 100.0;
 
     }
 

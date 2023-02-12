@@ -63,10 +63,10 @@ mat4 mat4::operator *(const mat4& m) const
 			float sum = 0;
 			for (size_t k = 0; k < 4; k++)
 			{
-				// TODO: Are these backwards??
+				// For column-major order (OpenGL)
 				// int m1_row = j + k * 4;
 				// int m2_col = i * 4 + k;
-				// I think it should be updated to this:
+				// Row major order (matches math notations)
 				int m1_row = i * 4 + k;
 				int m2_col = j + k * 4;
 				sum += (mat[m1_row] * m[m2_col]);

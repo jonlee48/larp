@@ -95,7 +95,9 @@ void initScene()
 
     // Load objects
     g_model = Model();
-    if (!g_model.LoadModel("assets/dfiles/biplane.d"))
+    //if (!g_model.LoadModel("assets/dfiles/biplane.d"))
+    if (!g_model.LoadModel("/mnt/d/sync/gw/spring2023/csci6554_computer_graphics_ii/larp/assets/dfiles/biplane.d"))
+    //if (!g_model.LoadModel("/mnt/d/sync/gw/spring2023/csci6554_computer_graphics_ii/larp/assets/dfiles/house.d"))
     {
         printf("Error loading model.\n");
     }
