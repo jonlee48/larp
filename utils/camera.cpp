@@ -28,12 +28,12 @@ mat4 Camera::GetPerspectiveMatrix()
 {
     float d = z_near;
     float f = z_far;
-    float scale = tan(radians(fov_y/2));
+    float scale = tan(radians(fov_y/2.0));
     mat4 pers(
         1/(scale*aspect_ratio), 0.0f, 0.0f, 0.0f,
         0.0f, 1/scale, 0.0f, 0.0f,
-        0.0f, 0.0f, f/(f-d), -d*f/(f-d),
-        0.0f, 0.0f, 0.0f, 1.0f
+        0.0f, 0.0f, -(f+d)/(f-d), -2*d*f/(f-d),
+        0.0f, 0.0f, -1.0f, 0.0f
     );
     return pers;
 }

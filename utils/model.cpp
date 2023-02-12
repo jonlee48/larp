@@ -121,7 +121,11 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
             vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
             vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
 
-            SDL_RenderDrawLine(renderer,h0.x,h0.y,h1.x,h1.y);
+            float x1 = 200.0*h0.x+400;
+            float x2 = 200.0*h1.x+400;
+            float y1 = 200.0*h0.y+300;
+            float y2 = 200.0*h1.y+300;
+            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
         }
     }
 

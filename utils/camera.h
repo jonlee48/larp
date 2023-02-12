@@ -38,8 +38,8 @@ public:
 
         aspect_ratio = 800.0/600.0;
         fov_y = 45;
-        z_near = -2;
-        z_far = -40;
+        z_near = 0.1;
+        z_far = 100.0;
 
     }
 
