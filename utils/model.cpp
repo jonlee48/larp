@@ -117,15 +117,36 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
         for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
             int p0 = faces[i].indices[k];
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
+            int p2 = faces[i].indices[(k + 2) % faces[i].indices.size()];
 
             vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
             vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
+            vec4 h2 = model_view_matrix * vec4(verts[p2], 1.0f);
 
-            float x1 = 200.0*h0.x+400;
-            float x2 = 200.0*h1.x+400;
-            float y1 = 200.0*h0.y+600;
-            float y2 = 200.0*h1.y+600;
-            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+            vec3 p_0 = vec3(h0.x, h0.y, h0.z);
+            vec3 p_1 = vec3(h1.x, h1.y, h1.z);
+            vec3 p_2 = vec3(h2.x, h2.y, h2.z);
+
+            p_0 = p_0.normalize();
+            p_1 = p_1.normalize();
+            p_2 = p_2.normalize();
+
+            vec3 v0 = p_1 - p_0;
+            vec3 v1 = p_2 - p_1;
+            vec3 n = v0.cross(v1);
+
+            // Check if face is not backfacing 
+            if (n.z < 0)
+            {
+                // Draw face to screen
+
+                // Scale normalized coordinates to device coordinates
+                float x1 = 200.0*h0.x+400;
+                float x2 = 200.0*h1.x+400;
+                float y1 = 200.0*h0.y+600;
+                float y2 = 200.0*h1.y+600;
+                SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+            }
         }
     }
 
