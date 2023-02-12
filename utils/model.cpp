@@ -123,8 +123,8 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
 
             float x1 = 200.0*h0.x+400;
             float x2 = 200.0*h1.x+400;
-            float y1 = 200.0*h0.y+300;
-            float y2 = 200.0*h1.y+300;
+            float y1 = 200.0*h0.y+600;
+            float y2 = 200.0*h1.y+600;
             SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
         }
     }
