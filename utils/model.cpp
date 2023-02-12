@@ -142,7 +142,6 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
             }
         }
     }
-
 }
 
 //=============================================

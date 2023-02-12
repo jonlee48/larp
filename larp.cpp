@@ -86,8 +86,8 @@ void initScene()
 {
     // Load objects
     g_model = Model();
-    g_model.LoadModel("assets/dfiles/biplane.d");
-    g_model.LoadModel("assets/dfiles/house.d");
+    // g_model.LoadModel("assets/dfiles/biplane.d");
+    // g_model.LoadModel("assets/dfiles/house.d");
     g_model.LoadModel("assets/dfiles/nteapot6.d");
 
 }
