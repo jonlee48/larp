@@ -1,5 +1,6 @@
 larp
 *.o
 *.bin
+*.mp4
 bin/*
 .vscode/
