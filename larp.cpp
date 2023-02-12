@@ -1,3 +1,5 @@
+#define _USE_MATH_DEFINES
+
 #include "larp.h"
 #include "utils/mat4.h"
 #include "utils/vec3.h"
@@ -82,25 +84,12 @@ void end(void)
 
 void initScene()
 {
-    // Camera parameters
-    // vec3 look_at(0,0,0);
-    // vec3 position(0,0,0);
-    // float aspect_ratio = (float)SCREEN_WIDTH/(float)SCREEN_HEIGHT;
-    // float fov_y = 120;
-    // float z_near = -2;
-    // float z_far = -40;
-
-    // Set up the camera
-    //g_camera.setCamera(look_at, position, aspect_ratio, fov_y, z_near, z_far);
-
     // Load objects
     g_model = Model();
-    //if (!g_model.LoadModel("assets/dfiles/biplane.d"))
-    if (!g_model.LoadModel("/mnt/d/sync/gw/spring2023/csci6554_computer_graphics_ii/larp/assets/dfiles/biplane.d"))
-    //if (!g_model.LoadModel("/mnt/d/sync/gw/spring2023/csci6554_computer_graphics_ii/larp/assets/dfiles/house.d"))
-    {
-        printf("Error loading model.\n");
-    }
+    g_model.LoadModel("assets/dfiles/biplane.d");
+    g_model.LoadModel("assets/dfiles/house.d");
+    g_model.LoadModel("assets/dfiles/nteapot6.d");
+
 }
 
 void renderScene()
@@ -135,6 +124,7 @@ int main(int argc, char* args[])
         bool quit = false; 
 
         //Uint32 last_time = SDL_GetTicks();
+        float increment = 0.0f;
 
         while (!quit) 
         {
@@ -148,6 +138,10 @@ int main(int argc, char* args[])
 
             renderScene();
 
+            //g_model.Rotate(increment, 0.0f, 0.0f);
+            g_model.Rotate(0.0f, increment, 0.0f);
+            increment += 0.01;
+            //g_model.Translate(vec3(0.0f, -0.7, 0.0f));
             SDL_Delay(1000/FPS);
             //Uint32 current_time = SDL_GetTicks();
             //Uint32 diff = current_time - last_time;
