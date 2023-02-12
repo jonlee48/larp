@@ -2,3 +2,4 @@ larp
 *.o
 *.bin
 bin/*
+.vscode/
