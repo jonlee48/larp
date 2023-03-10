@@ -29,6 +29,9 @@ You can also run the samples.
 - `./bin/03_texture` Display an image as a texture with HW acceleration. Kinda buggy when dragging windows. Had to put rendering in event loop. I think it's related to this [issue](https://github.com/libsdl-org/SDL/issues/1059#issuecomment-793116234).
 - `./bin/04_geometry` Display some rectangles and lines in the window.
 
+## TODO
+-[ ] Scan conversion
+
 ## Resources
 
 - [Simple DirectMedia Layer (SDL Wiki)](https://wiki.libsdl.org/SDL2/FrontPage)
