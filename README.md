@@ -31,6 +31,8 @@ You can also run the samples.
 
 ## TODO
 -[ ] Scan conversion
+-[ ] Makefile - o files and linker
+-[ ] Makefile - don't automatically make samples
 
 ## Resources
 

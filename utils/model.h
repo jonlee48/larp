@@ -56,6 +56,8 @@ public:
     //=============================================
     void DrawEdges(Camera &camera, SDL_Renderer *renderer);
 
+    void DrawFaces(Camera &camera, SDL_Renderer *renderer);
+    
     //=============================================
     // scale the model into the range of [ -0.9, 0.9 ]
     void ResizeModel(void);

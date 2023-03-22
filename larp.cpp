@@ -11,10 +11,10 @@
 #include <cmath>
 
 // Constants
-const int SCREEN_WIDTH = 800;//640;
-const int SCREEN_HEIGHT = 600;//480;
-const char *WINDOW_NAME = "Perspective Vector Display System";
-const int FPS = 60;
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+#define WINDOW_NAME "Perspective Vector Display System"
+#define FRAMES_PER_SECOND 60
 
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
@@ -101,6 +101,7 @@ void renderScene()
     // Redraw models
     SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xFF, 0xFF);
     g_model.DrawEdges(g_camera, g_renderer);
+    //g_model.DrawFaces(g_camera, g_renderer);
 
     //Update screen
     SDL_RenderPresent(g_renderer);
@@ -123,7 +124,8 @@ int main(int argc, char* args[])
         SDL_Event e; 
         bool quit = false; 
 
-        //Uint32 last_time = SDL_GetTicks();
+        Uint32 last_time = SDL_GetTicks();
+
         float increment = 0.0f;
 
         while (!quit) 
@@ -138,21 +140,19 @@ int main(int argc, char* args[])
 
             renderScene();
 
-            //g_model.Rotate(increment, 0.0f, 0.0f);
             g_model.Rotate(0.0f, increment, 0.0f);
-            increment += 0.01;
-            //g_model.Translate(vec3(0.0f, -0.7, 0.0f));
-            SDL_Delay(1000/FPS);
-            //Uint32 current_time = SDL_GetTicks();
-            //Uint32 diff = current_time - last_time;
-            //printf("Time: %d\n", diff);
-            //last_time = current_time;
+            increment += 0.1;
+
+            //SDL_Delay(1000/FRAMES_PER_SECOND);
+
+            Uint32 current_time = SDL_GetTicks();
+            Uint32 diff = current_time - last_time;
+            printf("Time: %d\n", diff);
+            last_time = current_time;
         }
 	}
 
     // Free resources and close SDL
     end();
-
 	return 0;
 }
-

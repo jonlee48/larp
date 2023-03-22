@@ -16,8 +16,6 @@ void initScene(void);
  */
 void renderScene(void);
 
-
-
 /**
  * Frees media and shuts down SDL
  */

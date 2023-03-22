@@ -5,14 +5,21 @@
 //================================
 // Camera
 //================================
+
+// Constants
+#define ASPECT_RATIO 800.0/600.0;
+#define FIELD_OF_VIEW_Y 45;
+#define NEAR_CLIPPING_PLANE 0.1;
+#define FAR_CLIPPING_PLANE 100.0;
+
 class Camera {
 public:
     
-    vec3 position;  // Center of projection (position of camera)
-    vec3 front;     // Viewing direction (normal to view plane)
-    vec3 right;     // X-direction of camera (positive right)
-    vec3 up;        // Camera up vector
-    vec3 world_up;  // Up direction of world
+    vec3 camera;    // Position of camera (center of projection)
+    vec3 normal;    // Viewing direction normal to view plane (Z-axis)
+    vec3 right;     // Positive right vector (X-axis)
+    vec3 up;        // Camera up vector (Y-axis)
+    vec3 world_up;  // Up vector of world
     
 
     vec3 look_at;   // Reference point to orbit around
@@ -28,26 +35,26 @@ public:
 
 public:
     Camera() {
-        look_at= vec3();
-        position = vec3(5.0f,0.0f,0.0f);
+        look_at = vec3();
+        camera = vec3(5.0f,0.0f,0.0f);
         world_up = vec3(0.0f,1.0f,0.0f);
 
-        front = (position - look_at).normalize();
-        right = (world_up.cross(front)).normalize();
-        up = (front.cross(right)).normalize();
+        normal = (look_at - camera).normalize();
+        right = (normal.cross(world_up)).normalize();
+        up = (right.cross(normal)).normalize();
 
-        aspect_ratio = 800.0/600.0;
-        fov_y = 45;
-        z_near = 0.1;
-        z_far = 100.0;
+        aspect_ratio = ASPECT_RATIO;
+        fov_y = FIELD_OF_VIEW_Y;
+        z_near = NEAR_CLIPPING_PLANE;
+        z_far = FAR_CLIPPING_PLANE;
 
     }
 
     ~Camera() {
     }
 
-
-    //void setCamera(const vec3 &look_at, const vec3 &position, float aspect_ratio, float fov_y, float z_near, float z_far);
+    // TODO: add these functions to move the camera around
+    // void setCamera(const vec3 &look_at, const vec3 &position, float aspect_ratio, float fov_y, float z_near, float z_far);
     // bool UpdateOrientation(float yaw, float pitch);
     // bool UpdateLookAt(vec3 &look_at);
     // bool UpdatePosition(vec3 &position);
@@ -55,6 +62,6 @@ public:
     // Returns camera matrix (world to camera transformation)
     mat4 GetViewMatrix();
 
-    // Returns perspective matrix (projects from camera frame to )
+    // Returns perspective matrix (prospective transformation from camera frame)
     mat4 GetPerspectiveMatrix();
 };

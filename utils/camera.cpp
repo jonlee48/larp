@@ -5,8 +5,8 @@
 
 mat4 Camera::GetViewMatrix()
 {
-    vec3 C = position;
-    vec3 N = front;
+    vec3 C = camera;
+    vec3 N = normal;
     vec3 U = right;
     vec3 V = up;
     mat4 R(
@@ -32,8 +32,8 @@ mat4 Camera::GetPerspectiveMatrix()
     mat4 pers(
         1/(scale*aspect_ratio), 0.0f, 0.0f, 0.0f,
         0.0f, 1/scale, 0.0f, 0.0f,
-        0.0f, 0.0f, -(f+d)/(f-d), -2*d*f/(f-d),
-        0.0f, 0.0f, -1.0f, 0.0f
+        0.0f, 0.0f, f/(f-d), -d*f/(f-d),
+        0.0f, 0.0f, 1.0f, 0.0f
     );
     return pers;
 }

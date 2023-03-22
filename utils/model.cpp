@@ -116,30 +116,30 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
 
     for (unsigned int i = 0; i < faces.size(); i++) {
         for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
+            vec4 n4 = model_view_matrix * vec4(face_normals[i], 1.0f);
+            vec3 normal = vec3(n4.x, n4.y, n4.z).normalize();
+
+            // Back-face culling: don't draw any faces that points away from camera (positive z)
+            if (normal.z < 0)
+                continue;
+
+            // Select a line on the face and do perspective transform 
             int p0 = faces[i].indices[k];
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
 
             vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
             vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
 
-            vec4 n4 = model_view_matrix * vec4(face_normals[i], 1.0f);
-            vec3 normal = vec3(n4.x, n4.y, n4.z).normalize();
-
-            // Check if face is not backfacing 
-            if (normal.z < 0)
-            {
-                // Draw face to screen
-
-                // Scale normalized coordinates to device coordinates
-                float x1 = 200.0*h0.x+400;
-                float x2 = 200.0*h1.x+400;
-                float y1 = 200.0*h0.y+600;
-                float y2 = 200.0*h1.y+600;
-                // flip y axis
-                y1 = 600 - y1;
-                y2 = 600 - y2;
-                SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
-            }
+            // TODO: Need to figure out what this scaling factor is 
+            // Scale normalized coordinates to device coordinates
+            float x1 = 200.0*h0.x+400;
+            float x2 = 200.0*h1.x+400;
+            float y1 = 200.0*h0.y+600;
+            float y2 = 200.0*h1.y+600;
+            // flip y axis
+            y1 = 600 - y1;
+            y2 = 600 - y2;
+            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
         }
     }
 }
