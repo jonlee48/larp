@@ -10,10 +10,10 @@ vec4::vec4()
 
 vec4::vec4(const vec3 &vec, float w) 
 {
-	this->x = vec.x;
-	this->y = vec.y;
-	this->z = vec.z;
-	this->w = w;
+	x = vec.x;
+	y = vec.y;
+	z = vec.z;
+	w = w;
 }
 
 vec4::vec4(float x, float y, float z, float w) 
