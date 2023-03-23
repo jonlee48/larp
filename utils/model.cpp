@@ -104,7 +104,7 @@ bool Model::LoadModel(const char* path)
 // Render Model
 //=============================================
 
-void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
+void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_height, bool back_face_culling, SDL_Renderer *renderer) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -113,33 +113,39 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     mat4 view_matrix = camera.GetViewMatrix();
     mat4 perspective_matrix = camera.GetPerspectiveMatrix();
     mat4 model_view_matrix = perspective_matrix * view_matrix * model_matrix;
-
+    
     for (unsigned int i = 0; i < faces.size(); i++) {
+        vec4 n4 = model_view_matrix * vec4(face_normals[i], 1.0f);
+        vec3 normal = vec3(n4.x, n4.y, n4.z).normalize();
+
+        // Back face culling: don't draw any faces that points away from camera (positive z)
+        printf("normal z: %f\n",normal.z);
+        if (normal.z < 0)
+            continue;
+
         for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
+
+
+            // Select a line on the face and do perspective transform 
             int p0 = faces[i].indices[k];
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
 
             vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
             vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
 
-            vec4 n4 = model_view_matrix * vec4(face_normals[i], 1.0f);
-            vec3 normal = vec3(n4.x, n4.y, n4.z).normalize();
+            vec3 v0 = vec3(h0.x, h0.y, h0.z).normalize();
+            vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
 
-            // Check if face is not backfacing 
-            if (normal.z < 0)
-            {
-                // Draw face to screen
+            // Scale normalized coordinates [-1, 1] to device coordinates [screen_width, screen_height]
+            float half_width = screen_width / 2.0;
+            float half_height = screen_height / 2.0;
 
-                // Scale normalized coordinates to device coordinates
-                float x1 = 200.0*h0.x+400;
-                float x2 = 200.0*h1.x+400;
-                float y1 = 200.0*h0.y+600;
-                float y2 = 200.0*h1.y+600;
-                // flip y axis
-                y1 = 600 - y1;
-                y2 = 600 - y2;
-                SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
-            }
+            float x1 = half_width * v0.x + half_width;
+            float x2 = half_width * v1.x + half_width;
+            float y1 = half_height * v0.y + half_height;
+            float y2 = half_height * v1.y + half_height;
+            
+            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
         }
     }
 }
