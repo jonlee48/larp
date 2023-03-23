@@ -11,10 +11,15 @@
 #include <cmath>
 
 // Constants
-const int SCREEN_WIDTH = 800;//640;
-const int SCREEN_HEIGHT = 600;//480;
-const char *WINDOW_NAME = "Perspective Vector Display System";
-const int FPS = 60;
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+#define WINDOW_NAME "Perspective Vector Display System"
+#define FRAMES_PER_SECOND 60
+
+#define MODEL_PATH "assets/dfiles/cube.d"
+#define MODEL_PATH "assets/dfiles/house.d"
+#define MODEL_PATH "assets/dfiles/nteapot6.d"
+#define MODEL_PATH "assets/dfiles/biplane.d"
 
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
@@ -86,9 +91,7 @@ void initScene()
 {
     // Load objects
     g_model = Model();
-    // g_model.LoadModel("assets/dfiles/biplane.d");
-    // g_model.LoadModel("assets/dfiles/house.d");
-    g_model.LoadModel("assets/dfiles/nteapot6.d");
+    g_model.LoadModel(MODEL_PATH);
 
 }
 
@@ -100,7 +103,7 @@ void renderScene()
 
     // Redraw models
     SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xFF, 0xFF);
-    g_model.DrawEdges(g_camera, g_renderer);
+    g_model.DrawEdges(g_camera, SCREEN_WIDTH, SCREEN_HEIGHT, true, g_renderer);
 
     //Update screen
     SDL_RenderPresent(g_renderer);
@@ -124,7 +127,9 @@ int main(int argc, char* args[])
         bool quit = false; 
 
         //Uint32 last_time = SDL_GetTicks();
-        float increment = 0.0f;
+
+        float i = 0.0f;
+        float j = 20.0f;
 
         while (!quit) 
         {
@@ -135,14 +140,19 @@ int main(int argc, char* args[])
                     quit = true;
                 }
             }
-
+            vec3 cam_pos = vec3(4.0, 0, 0);
+            g_camera = Camera(cam_pos, vec3());
             renderScene();
 
-            //g_model.Rotate(increment, 0.0f, 0.0f);
-            g_model.Rotate(0.0f, increment, 0.0f);
-            increment += 0.01;
-            //g_model.Translate(vec3(0.0f, -0.7, 0.0f));
-            SDL_Delay(1000/FPS);
+            g_model.Rotate(0.0f, i, M_PI); // flip around Z-axis
+            g_model.Scale(1.5);
+            i += 0.03;
+            j -= 0.01;
+            if (j < 0.1)
+                j = 20.0;
+
+            SDL_Delay(1000/FRAMES_PER_SECOND);
+
             //Uint32 current_time = SDL_GetTicks();
             //Uint32 diff = current_time - last_time;
             //printf("Time: %d\n", diff);
@@ -152,7 +162,5 @@ int main(int argc, char* args[])
 
     // Free resources and close SDL
     end();
-
 	return 0;
 }
-

@@ -6,7 +6,7 @@
 mat4 Camera::GetViewMatrix()
 {
     vec3 C = position;
-    vec3 N = front;
+    vec3 N = normal;
     vec3 U = right;
     vec3 V = up;
     mat4 R(
@@ -15,6 +15,7 @@ mat4 Camera::GetViewMatrix()
         N.x, N.y, N.z, 0.0f,
         0.0f, 0.0f, 0.0f, 1.0f
     );
+    // original working
     mat4 T(
         1.0f, 0.0f, 0.0f, -C.x,
         0.0f, 1.0f, 0.0f, -C.y,
@@ -28,12 +29,33 @@ mat4 Camera::GetPerspectiveMatrix()
 {
     float d = z_near;
     float f = z_far;
-    float scale = tan(radians(fov_y/2.0));
+    //float scale = tan(radians(fov_y/2.0));
+    float doh = 1.0/tan(radians(fov_y/2.0)); // distance to near clipping plane/height of near clipping plane
+    // matches lecture slides
     mat4 pers(
-        1/(scale*aspect_ratio), 0.0f, 0.0f, 0.0f,
-        0.0f, 1/scale, 0.0f, 0.0f,
-        0.0f, 0.0f, -(f+d)/(f-d), -2*d*f/(f-d),
-        0.0f, 0.0f, -1.0f, 0.0f
+        doh/aspect_ratio, 0.0f, 0.0f, 0.0f,
+        0.0f, doh, 0.0f, 0.0f,
+        0.0f, 0.0f, f/(f-d), -d*f/(f-d),
+        0.0f, 0.0f, 1.0f, 0.0f
     );
-    return pers;
+
+    // discussion
+    // mat4 pers(
+    //     doh, 0.0f, 0.0f, 0.0f,
+    //     0.0f, doh, 0.0f, 0.0f,
+    //     0.0f, 0.0f, f/(f-d), -2*d*f/(f-d),
+    //     0.0f, 0.0f, 1.0f, 0.0f
+    // );
+
+    // from tutorial
+    float near = 1.0;
+    float far = 100.0;
+
+    // mat4 pers(
+    //     2.0*near, 0.0f, 0.0f, 0.0f,
+    //     0.0f, 2.0*near, 0.0f, 0.0f,
+    //     0.0f, 0.0f, -(far+near)/(far-near), 2*far*near/(near-far),
+    //     0.0f, 0.0f, -1.0f, 0.0f
+    // );
+    return pers; 
 }
