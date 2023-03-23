@@ -9,13 +9,13 @@
 // Constants
 #define ASPECT_RATIO 800.0/600.0;
 #define FIELD_OF_VIEW_Y 45;
-#define NEAR_CLIPPING_PLANE 0.1;
+#define NEAR_CLIPPING_PLANE 1.0;
 #define FAR_CLIPPING_PLANE 100.0;
 
 class Camera {
 public:
     
-    vec3 camera;    // Position of camera (center of projection)
+    vec3 position;  // Position of camera (center of projection)
     vec3 normal;    // Viewing direction normal to view plane (Z-axis)
     vec3 right;     // Positive right vector (X-axis)
     vec3 up;        // Camera up vector (Y-axis)
@@ -35,11 +35,16 @@ public:
 
 public:
     Camera() {
-        look_at = vec3();
-        camera = vec3(5.0f,0.0f,0.0f);
+        vec3 position = vec3(10.0f, 0.0f, 0.0f);
+        vec3 look_at = vec3();
+        Camera(position, look_at);
+    }
+    Camera(vec3 position, vec3 look_at) {
+        this->position = position;
+        this->look_at = look_at;
         world_up = vec3(0.0f,1.0f,0.0f);
 
-        normal = (look_at - camera).normalize();
+        normal = (look_at - position).normalize();
         right = (normal.cross(world_up)).normalize();
         up = (right.cross(normal)).normalize();
 

@@ -23,7 +23,7 @@ make
 ```
 
 You can also run the samples.
-
+`make samples`
 - `./bin/01_bmp` Display an image from bmp format.
 - `./bin/02_png` Display an image from png format.
 - `./bin/03_texture` Display an image as a texture with HW acceleration. Kinda buggy when dragging windows. Had to put rendering in event loop. I think it's related to this [issue](https://github.com/libsdl-org/SDL/issues/1059#issuecomment-793116234).
@@ -32,7 +32,7 @@ You can also run the samples.
 ## TODO
 -[ ] Scan conversion
 -[ ] Makefile - o files and linker
--[ ] Makefile - don't automatically make samples
+-[ ] Makefile - does not detect changes to h files
 
 ## Resources
 
