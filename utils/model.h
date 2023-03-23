@@ -54,9 +54,7 @@ public:
     //=============================================
     // Render Model
     //=============================================
-    void DrawEdges(Camera &camera, const int screen_width, const int screen_height, bool back_face_culling, SDL_Renderer *renderer);
-
-    void DrawFaces(Camera &camera, SDL_Renderer *renderer);
+    void DrawEdges(Camera &camera, SDL_Renderer *renderer);
 
     //=============================================
     // scale the model into the range of [ -0.9, 0.9 ]
