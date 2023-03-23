@@ -16,10 +16,23 @@
 #define WINDOW_NAME "Perspective Vector Display System"
 #define FRAMES_PER_SECOND 60
 
-#define MODEL_PATH "assets/dfiles/nteapot6.d"
-#define MODEL_PATH "assets/dfiles/biplane.d"
+// #define MODEL_PATH "assets/dfiles/shuttle.d"
+// #define MODEL_PATH "assets/dfiles/soccer.d"
+// #define MODEL_PATH "assets/dfiles/redcar.d"
+// #define MODEL_PATH "assets/dfiles/pole.d"
+// #define MODEL_PATH "assets/dfiles/jcolumn.d"
+// #define MODEL_PATH "assets/dfiles/jbase.d"
+// #define MODEL_PATH "assets/dfiles/floor.d"
+// #define MODEL_PATH "assets/dfiles/cow.d"
+// #define MODEL_PATH "assets/dfiles/atc.d" // too large a model
+// #define MODEL_PATH "assets/dfiles/better-ball.d" //very good test
 #define MODEL_PATH "assets/dfiles/house.d"
-#define MODEL_PATH "assets/dfiles/cube.d"
+// #define MODEL_PATH "assets/dfiles/nteapot6.d"
+// #define MODEL_PATH "assets/dfiles/ronny.d"
+// #define MODEL_PATH "assets/dfiles/cylnd.d" // good sample
+// #define MODEL_PATH "assets/dfiles/cube.d"
+// #define MODEL_PATH "assets/dfiles/biplane.d"
+// #define MODEL_PATH "assets/dfiles/camaro.d" 
 
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
@@ -140,17 +153,18 @@ int main(int argc, char* args[])
                     quit = true;
                 }
             }
-            vec3 cam_pos = vec3(4.0, 0, 0);
+            vec3 cam_pos = vec3(4.5, 0, 0);
             g_camera = Camera(cam_pos, vec3());
             renderScene();
 
             g_model.Rotate(0.0f, i, M_PI); // flip around Z-axis
-            g_model.Scale(1.5);
+            //g_model.Scale(1.5);
             i += 0.01;
-            j -= 0.01;
+            j -= 0.06;
             if (j < 0.1)
                 j = 20.0;
 
+            printf("j %f\n", j);
             SDL_Delay(1000/FRAMES_PER_SECOND);
 
             //Uint32 current_time = SDL_GetTicks();

@@ -9,8 +9,8 @@
 // Constants
 #define ASPECT_RATIO 800.0/600.0;
 #define FIELD_OF_VIEW_Y 45;
-#define NEAR_CLIPPING_PLANE 1.0;
-#define FAR_CLIPPING_PLANE 100.0;
+#define NEAR_CLIPPING_PLANE 0.01;
+#define FAR_CLIPPING_PLANE 10.0;
 
 class Camera {
 public:

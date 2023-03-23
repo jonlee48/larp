@@ -115,36 +115,39 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
     mat4 model_view_matrix = perspective_matrix * view_matrix * model_matrix;
     
     for (unsigned int i = 0; i < faces.size(); i++) {
-        vec4 n4 = model_view_matrix * vec4(face_normals[i], 0.0f);
-        vec3 normal = vec3(n4.x, n4.y, n4.z).normalize();
+        vec4 v40 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0f);
+        vec4 v41 = model_view_matrix * vec4(verts[faces[i].indices[1]], 1.0f);
+        vec4 v42 = model_view_matrix * vec4(verts[faces[i].indices[2]], 1.0f);
+        vec3 v0 = vec3(v40.x, v40.y, v40.z).normalize();
+        vec3 v1 = vec3(v41.x, v41.y, v41.z).normalize();
+        vec3 v2 = vec3(v42.x, v42.y, v42.z).normalize();
+        vec3 normal = ((v1-v0).cross(v2-v1)).normalize();
 
         // Back face culling: don't draw any faces that points away from camera (positive z)
-        if (back_face_culling && normal.z < 0)
+        if (back_face_culling && normal.z > 0.0)
             continue;
 
         for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
-            // Select a line on the face and do perspective transform 
+            // Draw each line of the face with perspective transform 
             int p0 = faces[i].indices[k];
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
 
             vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
             vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
-            vec3 v0 = vec3(h0.x, h0.y, h0.z);//.normalize();
-            vec3 v1 = vec3(h1.x, h1.y, h1.z);//.normalize();
+            vec3 v0 = vec3(h0.x, h0.y, h0.z).normalize();
+            vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
 
             // Scale normalized coordinates [-1, 1] to device coordinates [screen_width, screen_height]
             float half_width = screen_width / 2.0;
             float half_height = screen_height / 2.0;
 
-            float zoom = 0.25;
+            float zoom = 1.0;
 
             float x1 = zoom * half_width * v0.x + half_width;
             float x2 = zoom * half_width * v1.x + half_width;
             float y1 = zoom * half_height * v0.y + half_height;
             float y2 = zoom * half_height * v1.y + half_height;
 
-            //printf("x1: %.2f\t x2: %.2f\t\t y1: %.2f\t y2: %.2f\n",x1,x2,y1,y2);
-            
             SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
         }
     }
