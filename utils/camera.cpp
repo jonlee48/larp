@@ -42,7 +42,7 @@ mat4 Camera::GetPerspectiveMatrix()
     float doh = 1.0/tan(radians(fov_y/2.0)); // distance to near clipping plane/height of near clipping plane
     // matches lecture slides
     mat4 pers(
-        doh, 0.0f, 0.0f, 0.0f,
+        doh/aspect_ratio, 0.0f, 0.0f, 0.0f,
         0.0f, doh, 0.0f, 0.0f,
         0.0f, 0.0f, f/(f-d), -d*f/(f-d),
         0.0f, 0.0f, 1.0f, 0.0f

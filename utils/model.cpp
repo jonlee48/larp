@@ -141,14 +141,11 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
             float half_width = screen_width / 2.0;
             float half_height = screen_height / 2.0;
 
-            float scale = 1000;
-            float x1 = scale * v0.x + half_width;
-            float x2 = scale * v1.x + half_width;
-            float y1 = scale * v0.y + half_height;
-            float y2 = scale * v1.y + half_height;
+            float x1 = half_width * v0.x + half_width;
+            float x2 = half_width * v1.x + half_width;
+            float y1 = half_height * v0.y + half_height;
+            float y2 = half_height * v1.y + half_height;
             
-
-
             // flip y axis
             // y1 = screen_height - y1;
             // y2 = screen_height - y2;

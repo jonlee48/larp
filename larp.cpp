@@ -16,10 +16,10 @@
 #define WINDOW_NAME "Perspective Vector Display System"
 #define FRAMES_PER_SECOND 60
 
-#define MODEL_PATH "assets/dfiles/biplane.d"
 #define MODEL_PATH "assets/dfiles/cube.d"
-#define MODEL_PATH "assets/dfiles/nteapot6.d"
 #define MODEL_PATH "assets/dfiles/house.d"
+#define MODEL_PATH "assets/dfiles/nteapot6.d"
+#define MODEL_PATH "assets/dfiles/biplane.d"
 
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
@@ -150,7 +150,7 @@ int main(int argc, char* args[])
             g_camera = Camera(cam_pos, vec3());
             renderScene();
 
-            g_model.Rotate(0.0f, i, 0.0f);
+            g_model.Rotate(0.0f, i, M_PI);
             //g_model.Translate(vec3(0.0f, j,j));
             i += 0.03;
             j -= 0.01;
