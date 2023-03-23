@@ -104,7 +104,7 @@ bool Model::LoadModel(const char* path)
 // Render Model
 //=============================================
 
-void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_height, SDL_Renderer *renderer) {
+void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_height, bool back_face_culling, SDL_Renderer *renderer) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -115,15 +115,16 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
     mat4 model_view_matrix = perspective_matrix * view_matrix * model_matrix;
     
     for (unsigned int i = 0; i < faces.size(); i++) {
+        vec4 n4 = model_view_matrix * vec4(face_normals[i], 1.0f);
+        vec3 normal = vec3(n4.x, n4.y, n4.z).normalize();
+
+        // Back face culling: don't draw any faces that points away from camera (positive z)
+        printf("normal z: %f\n",normal.z);
+        if (normal.z < 0)
+            continue;
 
         for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
-            vec4 n4 = model_view_matrix * vec4(face_normals[i], 1.0f);
-            vec3 normal = vec3(n4.x, n4.y, n4.z).normalize();
 
-            // Back-face culling: don't draw any faces that points away from camera (positive z)
-            // TODO: MAKE THIS A BOOLEAN INPUT
-            // if (normal.z < 0)
-            //     continue;
 
             // Select a line on the face and do perspective transform 
             int p0 = faces[i].indices[k];
@@ -135,9 +136,7 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
             vec3 v0 = vec3(h0.x, h0.y, h0.z).normalize();
             vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
 
-            //printf("Face %d \tVert %d \thX: %f \thY: %f \thZ: %f \thW: %f \tpX: %f \tpY: %f \tpZ: %f\n", i, k, h0.x, h0.y, h0.z, h0.w, verts[p0].x, verts[p0].y, verts[p0].z);
-
-            // Scale normalized coordinates to device coordinates
+            // Scale normalized coordinates [-1, 1] to device coordinates [screen_width, screen_height]
             float half_width = screen_width / 2.0;
             float half_height = screen_height / 2.0;
 
@@ -146,9 +145,6 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
             float y1 = half_height * v0.y + half_height;
             float y2 = half_height * v1.y + half_height;
             
-            // flip y axis
-            // y1 = screen_height - y1;
-            // y2 = screen_height - y2;
             SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
         }
     }
@@ -193,7 +189,7 @@ void Model::ResizeModel(void)
         verts[i] = verts[i] * 2.0f - vec3(1.0f, 1.0f, 1.0f);
 
         // [-0.9, 0.9]
-        //verts[i] *= 0.9;
+        verts[i] *= 0.9;
     }
 }
 

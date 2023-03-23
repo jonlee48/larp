@@ -22,15 +22,6 @@ mat4 Camera::GetViewMatrix()
         0.0f, 0.0f, 1.0f, -C.z,
         0.0f, 0.0f, 0.0f, 1.0f
     );
-
-    // desperate
-    // mat4 T(
-    //     1.0f, 0.0f, 0.0f, 0.0f,
-    //     0.0f, 1.0f, 0.0f, 0.0f,
-    //     0.0f, 0.0f, 1.0f, 0.0f,
-    //     -C.x, -C.y, -C.z, 1.0f
-    // );
-
     return R*T;
 }
 
@@ -66,5 +57,5 @@ mat4 Camera::GetPerspectiveMatrix()
     //     0.0f, 0.0f, -(far+near)/(far-near), 2*far*near/(near-far),
     //     0.0f, 0.0f, -1.0f, 0.0f
     // );
-    return pers;
+    return pers; 
 }

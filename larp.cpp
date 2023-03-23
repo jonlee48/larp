@@ -103,9 +103,7 @@ void renderScene()
 
     // Redraw models
     SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xFF, 0xFF);
-    // printf("Camera pos: %f %f %f\n", g_camera.position.x, g_camera.position.y, g_camera.position.z);
-    g_model.DrawEdges(g_camera, SCREEN_WIDTH, SCREEN_HEIGHT, g_renderer);
-    //g_model.DrawFaces(g_camera, g_renderer);
+    g_model.DrawEdges(g_camera, SCREEN_WIDTH, SCREEN_HEIGHT, true, g_renderer);
 
     //Update screen
     SDL_RenderPresent(g_renderer);
@@ -133,10 +131,6 @@ int main(int argc, char* args[])
         float i = 0.0f;
         float j = 20.0f;
 
-        // vec3 cam_pos = vec3(j, 0, 0);
-        // g_camera = Camera(cam_pos, vec3());
-        // renderScene();
-
         while (!quit) 
         {
             while (SDL_PollEvent(&e)) 
@@ -146,12 +140,12 @@ int main(int argc, char* args[])
                     quit = true;
                 }
             }
-            vec3 cam_pos = vec3(10.0, 0, 0);
+            vec3 cam_pos = vec3(4.0, 0, 0);
             g_camera = Camera(cam_pos, vec3());
             renderScene();
 
-            g_model.Rotate(0.0f, i, M_PI);
-            //g_model.Translate(vec3(0.0f, j,j));
+            g_model.Rotate(0.0f, i, M_PI); // flip around Z-axis
+            g_model.Scale(1.5);
             i += 0.03;
             j -= 0.01;
             if (j < 0.1)
