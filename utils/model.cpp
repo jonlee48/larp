@@ -3,14 +3,96 @@
 #include "vec3.h"
 
 //=============================================
+// Edge 
+//=============================================
+Edge::Edge(int y_max, int x_min, float inv_slope) {
+    this->y_max = y_max;
+    this->x_min = x_min;
+    this->inv_slope = inv_slope;
+    this->next = nullptr;
+}
+
+//=============================================
 // Edge Table
 //=============================================
 
-// void Edge::Edge(int y_max, int x_y_min, float inv_slope) {
-//     this->y_max = y_max;
-//     this->x_y_min = x_y_min;
-//     this->inv_slope = inv_slope;
-// }
+int EdgeTable::InsertEdge(Edge* edge) {
+    int scanline = edge->x_min;
+    std::map<int,Edge*>::iterator head;
+
+    head = this->scanlines.find(scanline);
+    if (head == this->scanlines.end()) {
+        // Scanline is empty, insert edge to head
+        this->scanlines[scanline] = edge;
+    }
+    else {
+        // Scanline contains edges, add edge in sorted order
+        Edge* cur = head->second;
+
+        if (edge->x_min < cur->x_min || (edge->x_min == cur->x_min && edge->inv_slope < cur->inv_slope)) {
+            // Insert edge at head (if smaller than head)
+            this->scanlines[scanline] = edge;
+            this->scanlines[scanline]->next = cur;
+        }
+        else {
+            // Insert edge in sorted order
+            while(cur->next != nullptr && cur->next->x_min < edge->x_min) {
+                // iterate to edge we want to insert after
+                cur = cur->next;
+            }
+                // insert edge after cur
+                Edge* next = cur->next;
+                cur->next = edge;
+                edge->next = next;
+        }
+    }
+
+    return 0;
+}
+
+Edge* EdgeTable::RemoveEdge(int scanline) {
+    // Remove the head from the scanline
+    std::map<int,Edge*>::iterator iter;
+
+    iter = this->scanlines.find(scanline);
+    if (iter == this->scanlines.end()) {
+        return nullptr;
+    }
+    else {
+        Edge* head = iter->second;
+        this->scanlines[scanline] = head->next;
+        return head;
+    }
+}
+
+EdgeTable::~EdgeTable() {
+    // Destructor, deletes all edges
+    std::map<int,Edge*>::iterator it;
+    for (it=this->scanlines.begin(); it != this->scanlines.end(); it++) {
+        Edge* cur = it->second;
+        while(cur != nullptr) {
+            Edge* next = cur->next;
+            delete cur;
+            cur = next;
+        }
+    }
+}
+
+bool EdgeTable::IsEmpty() {
+    return this->scanlines.empty();
+}
+
+void EdgeTable::PrintEdgeTable() {
+    std::map<int,Edge*>::iterator it;
+    for (it=this->scanlines.begin(); it != this->scanlines.end(); it++) {
+        printf("Scanline %d\t: ", it->first);
+        Edge* cur = it->second;
+        while(cur != nullptr) {
+            printf("(y_max=%d x_min=%d 1/m=%f) ",cur->y_max, cur->x_min, cur->inv_slope);
+        }
+        printf("\n");
+    }
+}
 
 //=============================================
 // Load Model

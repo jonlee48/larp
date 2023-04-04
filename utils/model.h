@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <vector>
 #include <cmath>
+#include <map>
 
 //================================
 // ModelFace
@@ -27,27 +28,55 @@ public:
 // EdgeTable
 //================================
 
-// class EdgeTable {
-// public:
-//     std::vector< *Edge > scanlines;
+class Edge {
+public:
+    int y_max;
+    int x_min;
+    float inv_slope;
+    Edge *next;
 
-// public:
-//     EdgeTable(int scanlines) {
-//     }
+public:
+    Edge(int y_max, int x_min, float inv_slope); 
 
-//     ~EdgeTable() {
-//     }
-// };
+    ~Edge() {
+    }
+};
 
-// class Edge {
-// public:
-//     int y_max;
-//     int x_y_min;
-//     float inv_slope;
-//     Edge *next;
-// public:
-//     Edge(int y_max, int x_y_min, float inv_slope); 
-// };
+class EdgeTable {
+public:
+    std::map<int,Edge*> scanlines;
+
+public:
+    EdgeTable() {
+    }
+
+    ~EdgeTable() {
+    }
+
+    int InsertEdge(Edge* edge);
+
+    Edge* RemoveEdge(int scanline);
+
+    bool IsEmpty();
+
+    void PrintEdgeTable();
+};
+/*
+class ActiveEdgeTable {
+    Edge* AET;
+
+public:
+    ActiveEdgeTable() {
+    }
+
+    ~ActiveEdgeTable() {
+    }
+
+    int Sort();
+
+    void UpdateAET(int delta);
+};
+*/
 
 //================================
 // Model
