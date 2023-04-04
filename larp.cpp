@@ -28,11 +28,11 @@
 // #define MODEL_PATH "assets/dfiles/better-ball.d" //very good test
 // #define MODEL_PATH "assets/dfiles/house.d"
 // #define MODEL_PATH "assets/dfiles/nteapot6.d"
-// #define MODEL_PATH "assets/dfiles/ronny.d"
+#define MODEL_PATH "assets/dfiles/ronny.d"
 // #define MODEL_PATH "assets/dfiles/cylnd.d" // good sample
 // #define MODEL_PATH "assets/dfiles/cube.d"
 // #define MODEL_PATH "assets/dfiles/biplane.d"
-#define MODEL_PATH "assets/dfiles/camaro.d" 
+// #define MODEL_PATH "assets/dfiles/camaro.d" 
 
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to

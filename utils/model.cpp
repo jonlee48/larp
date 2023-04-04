@@ -134,6 +134,7 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
     mat4 perspective_matrix = camera.GetPerspectiveMatrix();
     mat4 model_view_matrix = perspective_matrix * view_matrix * model_matrix;
     
+    // For each face in model
     for (unsigned int i = 0; i < faces.size(); i++) {
         // Backface culling 
         vec4 v40 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0f);
@@ -148,19 +149,23 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
         if (back_face_culling && normal.z > 0.0)
             continue;
 
-        // // Backface culling alternative method
-        // vec4 v3 = (model_matrix) * vec4(face_normals[i], 1.0f);
-        // vec3 normalp = vec3(v3.x, v3.y, v3.z).normalize();
-        // vec4 v4 = (model_matrix) * vec4(verts[faces[i].indices[1]], 1.0f);
-        // vec3 lineofsight = (vec3(v4.x, v4.y, v4.z) - camera.position).normalize();
-        // float dot = normalp.dot(lineofsight);
+        /*
+        // Backface culling (alternative method)
+        vec4 v3 = (model_matrix) * vec4(face_normals[i], 1.0f);
+        vec3 normalp = vec3(v3.x, v3.y, v3.z).normalize();
+        vec4 v4 = (model_matrix) * vec4(verts[faces[i].indices[1]], 1.0f);
+        vec3 lineofsight = (vec3(v4.x, v4.y, v4.z) - camera.position).normalize();
+        float dot = normalp.dot(lineofsight);
 
-        // // Visible if dot of normal and line of sight is positive
-        // if (back_face_culling && dot < 0.0)
-        //     continue;
+        // Visible if dot of normal and line of sight is positive
+        if (back_face_culling && dot < 0.0)
+            continue;
+        */
 
+        // For each edge in face 
         for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
-            // Draw each line of the face with perspective transform 
+
+            // Get perspective transform of edge
             int p0 = faces[i].indices[k];
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
 
@@ -180,8 +185,16 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
             float y1 = zoom * half_height * v0.y + half_height;
             float y2 = zoom * half_height * v1.y + half_height;
 
-            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+            // SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+
+            // Add to edge table
         }
+
+        // Iterate over scanlines
+            // Move edges from ET to AET
+            // Stop when ET and AET are empty
+            // Draw pixels to buffer
+
     }
 }
 
