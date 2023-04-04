@@ -173,7 +173,6 @@ int main(int argc, char* args[])
             //last_time = current_time;
         }
 	}
-
     // Free resources and close SDL
     end();
 	return 0;

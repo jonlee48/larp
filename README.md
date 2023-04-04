@@ -34,6 +34,19 @@ You can also run the samples.
 -[ ] Makefile - o files and linker
 -[ ] Makefile - does not detect changes to h files
 
+## Valgrind
+
+To check for memory leaks, run with Valgrind suppression file because SDL has leaks in the library.
+
+```
+valgrind --gen-suppressions=all --suppressions=./linux_sdl_gl.sup --leak-check=full --show-leak-kinds=all ./larp
+```
+
+Interesting reads
+- [https://stackoverflow.com/questions/1997171/why-does-valgrind-say-basic-sdl-program-is-leaking-memory](https://stackoverflow.com/questions/1997171/why-does-valgrind-say-basic-sdl-program-is-leaking-memory)
+- [https://stackoverflow.com/questions/5134891/how-do-i-use-valgrind-to-find-memory-leaks](https://stackoverflow.com/questions/5134891/how-do-i-use-valgrind-to-find-memory-leaks)
+
+
 ## Resources
 
 - [Simple DirectMedia Layer (SDL Wiki)](https://wiki.libsdl.org/SDL2/FrontPage)

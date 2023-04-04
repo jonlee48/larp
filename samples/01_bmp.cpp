@@ -65,7 +65,7 @@ bool load_media(void)
 }
 
 
-void close(void) 
+void end(void) 
 {
     // Deallocate surface
     SDL_FreeSurface(g_splash_image);
@@ -121,7 +121,7 @@ int main(int argc, char* args[])
 	}
 
     // Free resources and close SDL
-    close();
+    end();
 
 	return 0;
 }

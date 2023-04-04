@@ -11,7 +11,7 @@ BIN_DIR 	 = ./bin
 
 # Compiler and compiler flags
 CC      = g++
-CFLAGS  = -Wall -g
+CFLAGS  = -Wall -ggdb3
 
 # Linker flag to link with SDL2 library
 LFLAGS  = -lSDL2 -lSDL2_image

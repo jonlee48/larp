@@ -26,31 +26,28 @@ public:
 //================================
 // EdgeTable
 //================================
-/*
-class EdgeTable {
-public:
-    std::vector< *Edge > scanlines;
 
-public:
-    EdgeTable(int scanlines) {
-    }
+// class EdgeTable {
+// public:
+//     std::vector< *Edge > scanlines;
 
-    ~EdgeTable() {
-    }
-};
-*/
+// public:
+//     EdgeTable(int scanlines) {
+//     }
 
-/*
-class Edge {
-public:
-    int y_max;
-    int x_y_min;
-    float inv_slope;
-    Edge *next;
-public:
-    Edge(int y_max, int x_y_min, float inv_slope); 
-}
-*/
+//     ~EdgeTable() {
+//     }
+// };
+
+// class Edge {
+// public:
+//     int y_max;
+//     int x_y_min;
+//     float inv_slope;
+//     Edge *next;
+// public:
+//     Edge(int y_max, int x_y_min, float inv_slope); 
+// };
 
 //================================
 // Model

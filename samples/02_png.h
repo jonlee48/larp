@@ -15,7 +15,7 @@ bool load_media(void);
 /**
  * Frees media and shuts down SDL
  */
-void close(void);
+void end(void);
 
 /**
  * Load an individual image

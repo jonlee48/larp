@@ -5,13 +5,12 @@
 //=============================================
 // Edge Table
 //=============================================
-/*
-void Edge::Edge(int y_max, int x_y_min, float inv_slope) {
-    this->y_max = y_max;
-    this->x_y_min = x_y_min;
-    this->inv_slope = inv_slope;
-}
-*/
+
+// void Edge::Edge(int y_max, int x_y_min, float inv_slope) {
+//     this->y_max = y_max;
+//     this->x_y_min = x_y_min;
+//     this->inv_slope = inv_slope;
+// }
 
 //=============================================
 // Load Model
@@ -185,7 +184,7 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
             float y1 = zoom * half_height * v0.y + half_height;
             float y2 = zoom * half_height * v1.y + half_height;
 
-            // SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
 
             // Add to edge table
         }
