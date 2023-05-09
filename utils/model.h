@@ -47,11 +47,9 @@ public:
     std::map<int,Edge*> scanlines;
 
 public:
-    EdgeTable() {
-    }
+    EdgeTable() {}
 
-    ~EdgeTable() {
-    }
+    ~EdgeTable();
 
     int InsertEdge(Edge* edge);
 

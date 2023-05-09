@@ -1,6 +1,9 @@
 #include "model.h"
 #include "vec4.h"
 #include "vec3.h"
+#include "utils.h"
+
+#define FLOAT_TOL 1e-6
 
 //=============================================
 // Edge 
@@ -40,10 +43,10 @@ int EdgeTable::InsertEdge(Edge* edge) {
                 // iterate to edge we want to insert after
                 cur = cur->next;
             }
-                // insert edge after cur
-                Edge* next = cur->next;
-                cur->next = edge;
-                edge->next = next;
+            // insert edge after cur
+            Edge* next = cur->next;
+            cur->next = edge;
+            edge->next = next;
         }
     }
 
@@ -89,6 +92,7 @@ void EdgeTable::PrintEdgeTable() {
         Edge* cur = it->second;
         while(cur != nullptr) {
             printf("(y_max=%d x_min=%d 1/m=%f) ",cur->y_max, cur->x_min, cur->inv_slope);
+            cur = cur->next;
         }
         printf("\n");
     }
@@ -261,21 +265,19 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
 
             float zoom = 1.0;
 
-            float x1 = zoom * half_width * v0.x + half_width;
-            float x2 = zoom * half_width * v1.x + half_width;
-            float y1 = zoom * half_height * v0.y + half_height;
-            float y2 = zoom * half_height * v1.y + half_height;
+            float x0 = zoom * half_width * v0.x + half_width;
+            float x1 = zoom * half_width * v1.x + half_width;
+            float y0 = zoom * half_height * v0.y + half_height;
+            float y1 = zoom * half_height * v1.y + half_height;
 
-            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+            // Round to closest int
+            int ix0 = (int)round(x0);
+            int ix1 = (int)round(x1);
+            int iy0 = (int)round(y0);
+            int iy1 = (int)round(y1);
 
-            // Add to edge table
+            SDL_RenderDrawLine(renderer, ix0, iy0, ix1, iy1);
         }
-
-        // Iterate over scanlines
-            // Move edges from ET to AET
-            // Stop when ET and AET are empty
-            // Draw pixels to buffer
-
     }
 }
 
@@ -289,34 +291,38 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
     mat4 perspective_matrix = camera.GetPerspectiveMatrix();
     mat4 model_view_matrix = perspective_matrix * view_matrix * model_matrix;
     
+    // For each face in model
     for (unsigned int i = 0; i < faces.size(); i++) {
+        // Backface culling 
         vec4 v40 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0f);
         vec4 v41 = model_view_matrix * vec4(verts[faces[i].indices[1]], 1.0f);
         vec4 v42 = model_view_matrix * vec4(verts[faces[i].indices[2]], 1.0f);
         vec3 v0 = vec3(v40.x, v40.y, v40.z).normalize();
         vec3 v1 = vec3(v41.x, v41.y, v41.z).normalize();
         vec3 v2 = vec3(v42.x, v42.y, v42.z).normalize();
-        vec3 normal = ((v1-v0).cross(v2-v1)).normalize();
+        vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
 
-        // Back face culling: don't draw any faces that points away from camera (positive z)
+        // Don't draw any faces that point away from image plane (positive z)
         if (back_face_culling && normal.z > 0.0)
             continue;
 
-        // TODO: INITIALIZE EMPTY EDGE TABLE
-        // EdgeTable et = EdgeTable(screen_height);
+        EdgeTable et;
+        bool shorten = false;
 
+        // For each edge in face 
         for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
 
-            // TODO: ADD EDGE TO ET (can keep sorted by x of y_min)
-
-            // Draw each line of the face with perspective transform 
+            // Get perspective transform of edge (and next edge)
             int p0 = faces[i].indices[k];
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
+            int p2 = faces[i].indices[(k + 2) % faces[i].indices.size()];
 
             vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
             vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
+            vec4 h2 = model_view_matrix * vec4(verts[p2], 1.0f);
             vec3 v0 = vec3(h0.x, h0.y, h0.z).normalize();
             vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
+            vec3 v2 = vec3(h2.x, h2.y, h2.z).normalize();
 
             // Scale normalized coordinates [-1, 1] to device coordinates [screen_width, screen_height]
             float half_width = screen_width / 2.0;
@@ -324,13 +330,103 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
 
             float zoom = 1.0;
 
-            float x1 = zoom * half_width * v0.x + half_width;
-            float x2 = zoom * half_width * v1.x + half_width;
-            float y1 = zoom * half_height * v0.y + half_height;
-            float y2 = zoom * half_height * v1.y + half_height;
+            float x0 = zoom * half_width * v0.x + half_width;
+            float x1 = zoom * half_width * v1.x + half_width;
+            float y0 = zoom * half_height * v0.y + half_height;
+            float y1 = zoom * half_height * v1.y + half_height;
+            float y2 = zoom * half_height * v2.y + half_height;
 
-            SDL_RenderDrawLine(renderer,x1,y1,x2,y2);
+            // Round points 0 and 1
+            int ix0 = (int)round(x0);
+            int ix1 = (int)round(x1);
+            int iy0 = (int)round(y0);
+            int iy1 = (int)round(y1);
+            int iy2 = (int)round(y2);
+
+            float inv_m = x1 - x0;
+
+            // Add only non-horizontal edges to ET
+            if (comparefloats(iy0, iy1, FLOAT_TOL) != 0) {
+
+                /* Don't shorten edges for now
+                // On first edge, check if prev is monotonically decreasing
+                if (k == 0) {
+
+                    int p_1 = faces[i].indices[faces[i].indices.size() - 1];
+                    vec4 h_1 = model_view_matrix * vec4(verts[p_1], 1.0f);
+                    vec3 v_1 = vec3(h_1.x, h_1.y, h_1.z).normalize();
+                    float y_1 = zoom * half_height * v_1.y + half_height;
+                    int iy_1 = (int)round(y_1);
+
+                    if (comparefloats(iy_1, iy0, FLOAT_TOL) > 0 && comparefloats(iy0, iy1, FLOAT_TOL) > 0) {
+                        shorten = true;
+                    }
+                }
+
+                // Flag is set - shorten start of current edge
+                if (shorten) {
+                    iy0--;
+                    shorten = false;
+                }
+
+                // Edges are monotonically increasing
+                if (comparefloats(iy0, iy1, FLOAT_TOL) < 0 && comparefloats(iy1, iy2, FLOAT_TOL) < 0) {
+                    // Shorten end of current edge
+                    iy1--;
+                }
+
+                // Edges are monotonically decreasing
+                else if (comparefloats(iy0, iy1, FLOAT_TOL) > 0 && comparefloats(iy1, iy2, FLOAT_TOL) > 0) {
+                    // Shorten start of next edge
+                    shorten = true;
+                }
+
+                */
+
+                // Add to edge table
+                int y_max;
+                int x_min;
+                if (iy0 > iy1) {
+                    y_max = iy0;
+                }
+                else {
+                    y_max = iy1;
+                }
+                if (ix0 < ix1) {
+                    x_min = ix0;
+                }
+                else {
+                    x_min = ix1;
+                }
+ 
+                Edge* e = new Edge(y_max, x_min, inv_m);
+                et.InsertEdge(e);
+
+                // Temp test
+                SDL_RenderDrawLine(renderer, ix0, iy0, ix1, iy1);
+            }
         }
+        printf("FACE %d:\n", i);
+        et.PrintEdgeTable();
+        printf("\n");
+
+        /*
+        // active edge list
+        Edge* acl = nullptr;
+            
+        // start at the first scanline containing an edge
+        // stop when ET and AET are both empty or reached screen height
+        for (int scanline = 0; (!et.IsEmpty || acl != nullptr) && scanline < screen_height; scanline++) {
+            // move edge from ET to AET
+            acl
+        }
+        */
+
+        // Iterate over scanlines
+            // Move edges from ET to AET
+            // Stop when ET and AET are empty
+            // Draw pixels to buffer
+
     }
 }
 

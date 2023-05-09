@@ -10,11 +10,12 @@
 #include <string>
 #include <cmath>
 
-// Constants
+// Parameters
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define WINDOW_NAME "Perspective Vector Display System"
 #define FRAMES_PER_SECOND 60
+#define ANIMATE false
 
 // #define MODEL_PATH "assets/dfiles/shuttle.d"
 // #define MODEL_PATH "assets/dfiles/soccer.d"
@@ -25,10 +26,10 @@
 // #define MODEL_PATH "assets/dfiles/floor.d"
 // #define MODEL_PATH "assets/dfiles/cow.d"
 // #define MODEL_PATH "assets/dfiles/atc.d" // too large a model
-// #define MODEL_PATH "assets/dfiles/better-ball.d" //very good test
+#define MODEL_PATH "assets/dfiles/better-ball.d" //very good test
 // #define MODEL_PATH "assets/dfiles/house.d"
 // #define MODEL_PATH "assets/dfiles/nteapot6.d"
-#define MODEL_PATH "assets/dfiles/ronny.d"
+// #define MODEL_PATH "assets/dfiles/ronny.d"
 // #define MODEL_PATH "assets/dfiles/cylnd.d" // good sample
 // #define MODEL_PATH "assets/dfiles/cube.d"
 // #define MODEL_PATH "assets/dfiles/biplane.d"
@@ -40,7 +41,7 @@ SDL_Renderer *g_renderer = NULL;    // The window renderer
 
 // Scene
 Model g_model;
-Camera g_camera;    // Camera
+Camera g_camera;
 
 
 bool init(void)
@@ -116,7 +117,8 @@ void renderScene()
 
     // Redraw models
     SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xFF, 0xFF);
-    g_model.DrawEdges(g_camera, SCREEN_WIDTH, SCREEN_HEIGHT, true, g_renderer);
+    // g_model.DrawEdges(g_camera, SCREEN_WIDTH, SCREEN_HEIGHT, true, g_renderer);
+    g_model.DrawFaces(g_camera, SCREEN_WIDTH, SCREEN_HEIGHT, true, g_renderer);
 
     //Update screen
     SDL_RenderPresent(g_renderer);
@@ -138,11 +140,11 @@ int main(int argc, char* args[])
         // Begin the event loop
         SDL_Event e; 
         bool quit = false; 
+        int framecount = 0;
 
-        //Uint32 last_time = SDL_GetTicks();
+        Uint32 last_time = SDL_GetTicks();
 
-        float i = 0.0f;
-        float j = 20.0f;
+        float i = 0.0f;     // rotate
 
         while (!quit) 
         {
@@ -155,22 +157,25 @@ int main(int argc, char* args[])
             }
             vec3 cam_pos = vec3(4.5, 0, 0);
             g_camera = Camera(cam_pos, vec3());
-            renderScene();
 
-            g_model.Rotate(0.0f, i, M_PI); // flip around Z-axis
-            //g_model.Scale(1.5);
-            i += 0.01;
-            j -= 0.06;
-            if (j < 0.1)
-                j = 20.0;
+            if (ANIMATE || framecount == 0) {
+                // rotate around Z-axis
+                g_model.Rotate(0.0f, i, M_PI); 
+                // g_model.Scale(2);
 
-            // printf("j %f\n", j);
+                renderScene();
+
+                i += 0.01;
+                framecount++;
+            }
+
             SDL_Delay(1000/FRAMES_PER_SECOND);
 
-            //Uint32 current_time = SDL_GetTicks();
-            //Uint32 diff = current_time - last_time;
-            //printf("Time: %d\n", diff);
-            //last_time = current_time;
+            Uint32 current_time = SDL_GetTicks();
+            Uint32 diff = current_time - last_time;
+            if (ANIMATE)
+                printf("Time: %d\n", diff);
+            last_time = current_time;
         }
 	}
     // Free resources and close SDL
