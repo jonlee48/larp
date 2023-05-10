@@ -5,39 +5,16 @@
 #include "utils/vec3.h"
 #include "utils/model.h"
 #include "utils/camera.h"
+#include "utils/constants.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <string>
 #include <cmath>
 
-// Parameters
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
-#define WINDOW_NAME "Perspective Vector Display System"
-#define FRAMES_PER_SECOND 60
-#define ANIMATE true
-
-// #define MODEL_PATH "assets/dfiles/shuttle.d"
-// #define MODEL_PATH "assets/dfiles/soccer.d"
-// #define MODEL_PATH "assets/dfiles/redcar.d"
-// #define MODEL_PATH "assets/dfiles/pole.d"
-// #define MODEL_PATH "assets/dfiles/jcolumn.d"
-// #define MODEL_PATH "assets/dfiles/jbase.d"
-// #define MODEL_PATH "assets/dfiles/floor.d"
-#define MODEL_PATH "assets/dfiles/cow.d"
-// #define MODEL_PATH "assets/dfiles/atc.d" // too large a model
-// #define MODEL_PATH "assets/dfiles/better-ball.d" //very good test
-// #define MODEL_PATH "assets/dfiles/house.d"
-// #define MODEL_PATH "assets/dfiles/nteapot6.d"
-// #define MODEL_PATH "assets/dfiles/ronny.d"
-// #define MODEL_PATH "assets/dfiles/cylnd.d" // good sample
-// #define MODEL_PATH "assets/dfiles/cube.d"
-// #define MODEL_PATH "assets/dfiles/biplane.d"
-// #define MODEL_PATH "assets/dfiles/camaro.d" 
-
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
 SDL_Renderer *g_renderer = NULL;    // The window renderer
+float g_zbuffer[SCREEN_WIDTH][SCREEN_HEIGHT];   // Z depth buffer
 
 // Scene
 Model g_model;
@@ -107,6 +84,9 @@ void initScene()
     g_model = Model();
     g_model.LoadModel(MODEL_PATH);
 
+    // Reset depth buffer
+    memset(g_zbuffer, 0, sizeof(g_zbuffer));
+
 }
 
 void renderScene()
@@ -115,10 +95,13 @@ void renderScene()
     SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(g_renderer);
 
+    // Reset depth buffer
+    memset(g_zbuffer, 0, sizeof(g_zbuffer));
+
     // Redraw models
     SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xFF, 0xFF);
-    // g_model.DrawEdges(g_camera, SCREEN_WIDTH, SCREEN_HEIGHT, true, g_renderer);
-    g_model.DrawFaces(g_camera, SCREEN_WIDTH, SCREEN_HEIGHT, true, g_renderer);
+    // g_model.DrawEdges(g_camera, g_renderer);
+    g_model.DrawFaces(g_camera, g_renderer, g_zbuffer);
 
     //Update screen
     SDL_RenderPresent(g_renderer);

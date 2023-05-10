@@ -1,8 +1,9 @@
-#include "assert.h"
 #include "model.h"
 #include "vec4.h"
 #include "vec3.h"
 #include "utils.h"
+#include "constants.h"
+#include <assert.h>
 
 #define FLOAT_TOL 1e-6
 
@@ -286,7 +287,7 @@ bool Model::LoadModel(const char* path)
 // Render Model
 //=============================================
 
-void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_height, bool back_face_culling, SDL_Renderer *renderer) {
+void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -308,7 +309,7 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
         vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
 
         // Don't draw any faces that point away from image plane (positive z)
-        if (back_face_culling && normal.z > 0.0)
+        if (BACK_FACE_CULLING && normal.z > 0.0)
             continue;
 
         /*
@@ -320,7 +321,7 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
         float dot = normalp.dot(lineofsight);
 
         // Visible if dot of normal and line of sight is positive
-        if (back_face_culling && dot < 0.0)
+        if (BACK_FACE_CULLING && dot < 0.0)
             continue;
         */
 
@@ -336,9 +337,9 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
             vec3 v0 = vec3(h0.x, h0.y, h0.z).normalize();
             vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
 
-            // Scale normalized coordinates [-1, 1] to device coordinates [screen_width, screen_height]
-            float half_width = screen_width / 2.0;
-            float half_height = screen_height / 2.0;
+            // Scale normalized coordinates [-1, 1] to device coordinates [SCREEN_WIDTH, SCREEN_HEIGHT]
+            float half_width = SCREEN_WIDTH / 2.0;
+            float half_height = SCREEN_HEIGHT / 2.0;
 
             float zoom = 1.0;
 
@@ -358,7 +359,7 @@ void Model::DrawEdges(Camera &camera, const int screen_width, const int screen_h
     }
 }
 
-void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_height, bool back_face_culling, SDL_Renderer *renderer) {
+void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float zbuffer[SCREEN_WIDTH][SCREEN_HEIGHT]) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -380,7 +381,7 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
         vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
 
         // Don't draw any faces that point away from image plane (positive z)
-        if (back_face_culling && normal.z > 0.0)
+        if (BACK_FACE_CULLING && normal.z > 0.0)
             continue;
 
         // Randomize color
@@ -404,9 +405,9 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
             vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
             vec3 v2 = vec3(h2.x, h2.y, h2.z).normalize();
 
-            // Scale normalized coordinates [-1, 1] to device coordinates [screen_width, screen_height]
-            float half_width = screen_width / 2.0;
-            float half_height = screen_height / 2.0;
+            // Scale normalized coordinates [-1, 1] to device coordinates [SCREEN_WIDTH, SCREEN_HEIGHT]
+            float half_width = SCREEN_WIDTH / 2.0;
+            float half_height = SCREEN_HEIGHT / 2.0;
 
             float zoom = 1.0;
 
@@ -428,41 +429,7 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
             // Add only non-horizontal edges to ET
             if (comparefloats(iy0, iy1, FLOAT_TOL) != 0) {
 
-                /* Assume convex polygon - don't shorten edges for now
-
-                // On first edge, check if prev is monotonically decreasing
-                if (k == 0) {
-
-                    int p_1 = faces[i].indices[faces[i].indices.size() - 1];
-                    vec4 h_1 = model_view_matrix * vec4(verts[p_1], 1.0f);
-                    vec3 v_1 = vec3(h_1.x, h_1.y, h_1.z).normalize();
-                    float y_1 = zoom * half_height * v_1.y + half_height;
-                    int iy_1 = (int)round(y_1);
-
-                    if (comparefloats(iy_1, iy0, FLOAT_TOL) > 0 && comparefloats(iy0, iy1, FLOAT_TOL) > 0) {
-                        shorten = true;
-                    }
-                }
-
-                // Flag is set - shorten start of current edge
-                if (shorten) {
-                    iy0--;
-                    shorten = false;
-                }
-
-                // Edges are monotonically increasing
-                if (comparefloats(iy0, iy1, FLOAT_TOL) < 0 && comparefloats(iy1, iy2, FLOAT_TOL) < 0) {
-                    // Shorten end of current edge
-                    iy1--;
-                }
-
-                // Edges are monotonically decreasing
-                else if (comparefloats(iy0, iy1, FLOAT_TOL) > 0 && comparefloats(iy1, iy2, FLOAT_TOL) > 0) {
-                    // Shorten start of next edge
-                    shorten = true;
-                }
-
-                */
+                /* Assume convex polygon - don't shorten edges
 
                 // Add to edge table
                 int y_max;
@@ -495,7 +462,7 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
             
         // Start at the first scanline containing an edge
         // Stop when ET and AET are empty
-        for (int scanline = et.scanlines.begin()->first; (!et.IsEmpty() || !aet.IsEmpty()) && scanline < screen_height; scanline++) {
+        for (int scanline = et.scanlines.begin()->first; (!et.IsEmpty() || !aet.IsEmpty()) && scanline < SCREEN_HEIGHT; scanline++) {
             // Move edges from ET to AET
             Edge* e;
             while((e = et.RemoveEdge(scanline)) != nullptr) {
@@ -504,10 +471,8 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
                 int x_int = (int)round(e->x_min);
                 aet.InsertEdge(x_int, e);
             }
-            // printf("All edges found on scanline %d\n", scanline);
 
             // Draw lines between pairs of edges in AET
-            // printf("drawing scanline %d\n", scanline);
             // aet.PrintActiveEdgeTable();
             assert((*aet.aet).size() % 2 == 0);
             std::multimap<int,Edge*>::iterator it;
@@ -522,16 +487,13 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
                 Edge* next = it->second;
 
                 // printf("(y_max=%d x_min=%f 1/m=%f) -> (y_max=%d x_min=%f 1/m=%f)\n",cur->y_max, cur->x_min, cur->inv_slope, next->y_max, next->x_min, next->inv_slope);
-                assert(ix0 >= 0 && ix0 < screen_width);
-                assert(ix1 >= 0 && ix1 < screen_width);
-                // printf("drawing line\n");
+                assert(ix0 >= 0 && ix0 < SCREEN_WIDTH);
+                assert(ix1 >= 0 && ix1 < SCREEN_WIDTH);
                 SDL_RenderDrawLine(renderer, ix0, scanline, ix1, scanline);
-                // printf("done drawing line\n");
             }
 
             // Update edges
             aet.UpdateEdges(scanline);
-            // printf("done updating edges\n");
         }
     }
 }
