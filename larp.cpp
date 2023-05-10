@@ -24,12 +24,12 @@
 // #define MODEL_PATH "assets/dfiles/jcolumn.d"
 // #define MODEL_PATH "assets/dfiles/jbase.d"
 // #define MODEL_PATH "assets/dfiles/floor.d"
-// #define MODEL_PATH "assets/dfiles/cow.d"
+#define MODEL_PATH "assets/dfiles/cow.d"
 // #define MODEL_PATH "assets/dfiles/atc.d" // too large a model
 // #define MODEL_PATH "assets/dfiles/better-ball.d" //very good test
 // #define MODEL_PATH "assets/dfiles/house.d"
 // #define MODEL_PATH "assets/dfiles/nteapot6.d"
-#define MODEL_PATH "assets/dfiles/ronny.d"
+// #define MODEL_PATH "assets/dfiles/ronny.d"
 // #define MODEL_PATH "assets/dfiles/cylnd.d" // good sample
 // #define MODEL_PATH "assets/dfiles/cube.d"
 // #define MODEL_PATH "assets/dfiles/biplane.d"

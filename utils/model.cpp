@@ -180,6 +180,7 @@ void Model::Free(void)
     verts.clear();
     faces.clear();
     face_normals.clear();
+    face_colors.clear();
     verts_normals.clear();
 }
 
@@ -207,6 +208,7 @@ bool Model::LoadModel(const char* path)
     verts.resize(numVerts);
     faces.resize(numFaces);
     face_normals.resize(numFaces);
+    face_colors.resize(numFaces);
     verts_normals.resize(numVerts);
 
 
@@ -247,6 +249,8 @@ bool Model::LoadModel(const char* path)
         // vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
         
         face_normals[i] = normal.normalize();
+        // Set face to random color
+        face_colors[i] = vec3(rand() % 256, rand() % 256, rand() % 256);
     }
 
     // calculate verts normals
@@ -380,10 +384,7 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
             continue;
 
         // Randomize color
-        Uint8 r = (Uint8)(rand() % 256);
-        Uint8 g = (Uint8)(rand() % 256);
-        Uint8 b = (Uint8)(rand() % 256);
-        SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
+        SDL_SetRenderDrawColor(renderer, (Uint8)face_colors[i].x, (Uint8)face_colors[i].y, (Uint8)face_colors[i].z, 0xFF);
 
         EdgeTable et;
         bool shorten = false;

@@ -86,6 +86,7 @@ public:
     std::vector< vec3 > verts;
     std::vector< vec3 > verts_normals;
     std::vector< vec3 > face_normals;
+    std::vector< vec3 > face_colors;
     std::vector< ModelFace > faces;
     mat4 model_matrix;
     mat4 scale_matrix;
