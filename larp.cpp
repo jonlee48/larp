@@ -14,7 +14,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define WINDOW_NAME "Perspective Vector Display System"
-#define FRAMES_PER_SECOND 1
+#define FRAMES_PER_SECOND 60
 #define ANIMATE true
 
 // #define MODEL_PATH "assets/dfiles/shuttle.d"
@@ -27,9 +27,9 @@
 // #define MODEL_PATH "assets/dfiles/cow.d"
 // #define MODEL_PATH "assets/dfiles/atc.d" // too large a model
 // #define MODEL_PATH "assets/dfiles/better-ball.d" //very good test
-#define MODEL_PATH "assets/dfiles/house.d"
+// #define MODEL_PATH "assets/dfiles/house.d"
 // #define MODEL_PATH "assets/dfiles/nteapot6.d"
-// #define MODEL_PATH "assets/dfiles/ronny.d"
+#define MODEL_PATH "assets/dfiles/ronny.d"
 // #define MODEL_PATH "assets/dfiles/cylnd.d" // good sample
 // #define MODEL_PATH "assets/dfiles/cube.d"
 // #define MODEL_PATH "assets/dfiles/biplane.d"

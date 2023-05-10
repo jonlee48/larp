@@ -146,11 +146,10 @@ void ActiveEdgeTable::UpdateEdges(int scanline) {
     for (it=(*this->aet).begin(); it != (*this->aet).end(); it++) {
         Edge* cur = it->second;
         // Update edge and move it to new table
-        if (cur->y_max > scanline) {
+        if (cur->y_max - 1> scanline) {
             cur->x_min += cur->inv_slope;
             int x_int = (int)round(cur->x_min);
-            this->InsertEdge(x_int, cur);
-            // (*new_aet)[x_int] = cur;
+            (*new_aet).insert(std::pair<int,Edge*>(x_int, cur));
         }
         else {
             delete cur;
@@ -486,9 +485,9 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
                 // SDL_RenderDrawLine(renderer, ix0, iy0, ix1, iy1);
             }
         }
-        printf("ET - FACE %d:\n", i);
-        et.PrintEdgeTable();
-        printf("\n");
+        // printf("ET - FACE %d:\n", i);
+        // et.PrintEdgeTable();
+        // printf("\n");
 
         // active edge table 
         ActiveEdgeTable aet;
@@ -499,39 +498,39 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
             // Move edges from ET to AET
             Edge* e;
             while((e = et.RemoveEdge(scanline)) != nullptr) {
-                printf("Moving edge (y_max=%d x_min=%f 1/m=%f) to AET\n",e->y_max, e->x_min, e->inv_slope);
+                // printf("Moving edge (y_max=%d x_min=%f 1/m=%f) to AET\n",e->y_max, e->x_min, e->inv_slope);
                 // AET is keyed by x_int
                 int x_int = (int)round(e->x_min);
                 aet.InsertEdge(x_int, e);
             }
-            printf("All edges found on scanline %d\n", scanline);
+            // printf("All edges found on scanline %d\n", scanline);
 
             // Draw lines between pairs of edges in AET
-            printf("drawing scanline %d\n", scanline);
-            aet.PrintActiveEdgeTable();
+            // printf("drawing scanline %d\n", scanline);
+            // aet.PrintActiveEdgeTable();
             assert((*aet.aet).size() % 2 == 0);
             std::multimap<int,Edge*>::iterator it;
             for (it = (*aet.aet).begin(); it != (*aet.aet).end(); it++) {
-                printf("AET @ scanline %d: \n", scanline);
+                // printf("AET @ scanline %d: \n", scanline);
                 int ix0 = it->first;
-                printf("ix0: %d\n", ix0);
+                // printf("ix0: %d\n", ix0);
                 Edge* cur = it->second;
                 it++;
                 int ix1 = it->first;
-                printf("ix1: %d\n", ix1);
+                // printf("ix1: %d\n", ix1);
                 Edge* next = it->second;
 
-                printf("(y_max=%d x_min=%f 1/m=%f) -> (y_max=%d x_min=%f 1/m=%f)\n",cur->y_max, cur->x_min, cur->inv_slope, next->y_max, next->x_min, next->inv_slope);
+                // printf("(y_max=%d x_min=%f 1/m=%f) -> (y_max=%d x_min=%f 1/m=%f)\n",cur->y_max, cur->x_min, cur->inv_slope, next->y_max, next->x_min, next->inv_slope);
                 assert(ix0 >= 0 && ix0 < screen_width);
                 assert(ix1 >= 0 && ix1 < screen_width);
-                printf("drawing line\n");
+                // printf("drawing line\n");
                 SDL_RenderDrawLine(renderer, ix0, scanline, ix1, scanline);
-                printf("done drawing line\n");
+                // printf("done drawing line\n");
             }
 
             // Update edges
             aet.UpdateEdges(scanline);
-            printf("done updating edges\n");
+            // printf("done updating edges\n");
         }
     }
 }
