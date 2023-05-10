@@ -9,7 +9,7 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 const char *WINDOW_NAME = "Surface Sample";
-const int FPS = 1;
+const int FPS = 60;
 
 // The window we'll be rendering to
 SDL_Window *g_window = NULL;
@@ -101,20 +101,6 @@ void GetPixel(SDL_Surface *surface, int x, int y, Uint8 *r, Uint8 *g, Uint8 *b, 
     SDL_UnlockSurface(surface);
 }
 
-void WipeSurface(SDL_Surface *surface, int value)
-{
-    /* This is fast for surfaces that don't require locking. */
-    /* Once locked, surface->pixels is safe to access. */
-    SDL_LockSurface(surface);
-
-    /* This assumes that color value zero is black. Use
-       SDL_MapRGBA() for more robust surface color mapping! */
-    /* height times pitch is the size of the surface's whole buffer. */
-    SDL_memset(surface->pixels, value, surface->h * surface->pitch);
-
-    SDL_UnlockSurface(surface);
-}
-
 int main(int argc, char* args[])
 {
     // Start up SDL and create window
@@ -145,14 +131,8 @@ int main(int argc, char* args[])
         SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(g_renderer);
 
-
-        //Need to populate the renderer for some reason
-        SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0xFF );		
-        SDL_Rect screen_rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-        SDL_RenderFillRect(g_renderer, &screen_rect);
-
         //Draw something to the surface
-        WipeSurface(g_surface, 255);
+        SDL_FillRect(g_surface, NULL, SDL_MapRGBA(g_surface->format, 0, 128, 128, 255));
         SetPixel(g_surface, 5, 5, 0, 255, 0, 255);
         SetPixel(g_surface, 6, 5, 255, 0, 0, 255);
         SetPixel(g_surface, 6, 5, 0, 0, 255, 255);
@@ -172,7 +152,7 @@ int main(int argc, char* args[])
         SDL_Texture *texture = SDL_CreateTextureFromSurface(g_renderer, g_surface);
 
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
-        SDL_RenderCopy(g_renderer, texture, NULL, &screen_rect);
+        SDL_RenderCopy(g_renderer, texture, NULL, NULL);
         SDL_DestroyTexture(texture);
 
         //Check a value of surface and write to it
