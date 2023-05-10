@@ -31,12 +31,12 @@ public:
 class Edge {
 public:
     int y_max;
-    int x_min;
+    float x_min; 
     float inv_slope;
     Edge *next;
 
 public:
-    Edge(int y_max, int x_min, float inv_slope); 
+    Edge(int y_max, float x_min, float inv_slope); 
 
     ~Edge() {
     }
@@ -51,7 +51,7 @@ public:
 
     ~EdgeTable();
 
-    int InsertEdge(Edge* edge);
+    int InsertEdge(int scanline, Edge* edge);
 
     Edge* RemoveEdge(int scanline);
 
@@ -59,22 +59,24 @@ public:
 
     void PrintEdgeTable();
 };
-/*
+
 class ActiveEdgeTable {
-    Edge* AET;
+public:
+    std::multimap<int,Edge*> *aet;
 
 public:
-    ActiveEdgeTable() {
-    }
+    ActiveEdgeTable();
 
-    ~ActiveEdgeTable() {
-    }
+    ~ActiveEdgeTable();
 
-    int Sort();
+    int InsertEdge(int x_int, Edge* edge);
 
-    void UpdateAET(int delta);
+    bool IsEmpty();
+
+    void UpdateEdges(int delta);
+
+    void PrintActiveEdgeTable();
 };
-*/
 
 //================================
 // Model

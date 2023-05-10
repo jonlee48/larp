@@ -1,3 +1,4 @@
+#include "assert.h"
 #include "model.h"
 #include "vec4.h"
 #include "vec3.h"
@@ -8,7 +9,7 @@
 //=============================================
 // Edge 
 //=============================================
-Edge::Edge(int y_max, int x_min, float inv_slope) {
+Edge::Edge(int y_max, float x_min, float inv_slope) {
     this->y_max = y_max;
     this->x_min = x_min;
     this->inv_slope = inv_slope;
@@ -19,8 +20,7 @@ Edge::Edge(int y_max, int x_min, float inv_slope) {
 // Edge Table
 //=============================================
 
-int EdgeTable::InsertEdge(Edge* edge) {
-    int scanline = edge->x_min;
+int EdgeTable::InsertEdge(int scanline, Edge* edge) {
     std::map<int,Edge*>::iterator head;
 
     head = this->scanlines.find(scanline);
@@ -63,7 +63,13 @@ Edge* EdgeTable::RemoveEdge(int scanline) {
     }
     else {
         Edge* head = iter->second;
-        this->scanlines[scanline] = head->next;
+        if (head->next == nullptr) {
+            scanlines.erase(scanline);
+        }
+        else {
+            this->scanlines[scanline] = head->next;
+        }
+        head->next = nullptr;
         return head;
     }
 }
@@ -91,10 +97,78 @@ void EdgeTable::PrintEdgeTable() {
         printf("Scanline %d\t: ", it->first);
         Edge* cur = it->second;
         while(cur != nullptr) {
-            printf("(y_max=%d x_min=%d 1/m=%f) ",cur->y_max, cur->x_min, cur->inv_slope);
+            printf("(y_max=%d x_min=%f 1/m=%f) ",cur->y_max, cur->x_min, cur->inv_slope);
             cur = cur->next;
         }
         printf("\n");
+    }
+}
+
+//=============================================
+// Active Edge Table
+//=============================================
+
+ActiveEdgeTable::ActiveEdgeTable() {
+    this->aet = new std::multimap<int,Edge*>();
+}
+
+ActiveEdgeTable::~ActiveEdgeTable() {
+    // Destructor, deletes all edges
+    if (this->aet != nullptr) {
+        std::multimap<int,Edge*>::iterator it;
+        for (it=(*this->aet).begin(); it != (*this->aet).end(); it++) {
+            Edge* cur = it->second;
+            delete cur;
+            (*this->aet).erase(it->first);
+        }
+        delete this->aet;
+    }
+}
+
+int ActiveEdgeTable::InsertEdge(int x_int, Edge* edge) {
+    assert(this->aet != nullptr);
+    // (*this->aet)[x_int] = edge;
+    (*this->aet).insert(std::pair<int,Edge*>(x_int, edge));
+    return 0;
+}
+
+bool ActiveEdgeTable::IsEmpty() {
+    assert(this->aet != nullptr);
+    return (*this->aet).empty();
+}
+
+void ActiveEdgeTable::UpdateEdges(int scanline) {
+    assert(this->aet != nullptr);
+
+    std::multimap<int,Edge*> *new_aet = new std::multimap<int,Edge*>();
+    // Only save edges whose y_max > scanline
+    std::multimap<int,Edge*>::iterator it;
+    for (it=(*this->aet).begin(); it != (*this->aet).end(); it++) {
+        Edge* cur = it->second;
+        // Update edge and move it to new table
+        if (cur->y_max > scanline) {
+            cur->x_min += cur->inv_slope;
+            int x_int = (int)round(cur->x_min);
+            this->InsertEdge(x_int, cur);
+            // (*new_aet)[x_int] = cur;
+        }
+        else {
+            delete cur;
+        }
+    }
+
+    // Switch old AET to new AET
+    delete this->aet;
+    this->aet = new_aet;
+}
+
+void ActiveEdgeTable::PrintActiveEdgeTable() {
+    std::multimap<int,Edge*>::iterator it;
+    assert(this->aet != nullptr);
+    printf("AET: \n");
+    for (it=(*this->aet).begin(); it != (*this->aet).end(); it++) {
+        Edge* cur = it->second;
+        printf("[%d](y_max=%d x_min=%f 1/m=%f)\n",it->first, cur->y_max, cur->x_min, cur->inv_slope);
     }
 }
 
@@ -306,6 +380,12 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
         if (back_face_culling && normal.z > 0.0)
             continue;
 
+        // Randomize color
+        Uint8 r = (Uint8)(rand() % 256);
+        Uint8 g = (Uint8)(rand() % 256);
+        Uint8 b = (Uint8)(rand() % 256);
+        SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
+
         EdgeTable et;
         bool shorten = false;
 
@@ -343,12 +423,13 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
             int iy1 = (int)round(y1);
             int iy2 = (int)round(y2);
 
-            float inv_m = x1 - x0;
+            float inv_m = (x1 - x0)/(y1 - y0);
 
             // Add only non-horizontal edges to ET
             if (comparefloats(iy0, iy1, FLOAT_TOL) != 0) {
 
-                /* Don't shorten edges for now
+                /* Assume convex polygon - don't shorten edges for now
+
                 // On first edge, check if prev is monotonically decreasing
                 if (k == 0) {
 
@@ -385,48 +466,73 @@ void Model::DrawFaces(Camera &camera, const int screen_width, const int screen_h
 
                 // Add to edge table
                 int y_max;
-                int x_min;
+                int y_min;
+                float x_min;
                 if (iy0 > iy1) {
                     y_max = iy0;
+                    y_min = iy1;
+                    x_min = x1;
                 }
                 else {
                     y_max = iy1;
+                    y_min = iy0;
+                    x_min = x0;
                 }
-                if (ix0 < ix1) {
-                    x_min = ix0;
-                }
-                else {
-                    x_min = ix1;
-                }
- 
-                Edge* e = new Edge(y_max, x_min, inv_m);
-                et.InsertEdge(e);
 
-                // Temp test
-                SDL_RenderDrawLine(renderer, ix0, iy0, ix1, iy1);
+                Edge* e = new Edge(y_max, x_min, inv_m);
+                et.InsertEdge(y_min,e);
+
+                // TODO: render test
+                // SDL_RenderDrawLine(renderer, ix0, iy0, ix1, iy1);
             }
         }
-        printf("FACE %d:\n", i);
+        printf("ET - FACE %d:\n", i);
         et.PrintEdgeTable();
         printf("\n");
 
-        /*
-        // active edge list
-        Edge* acl = nullptr;
+        // active edge table 
+        ActiveEdgeTable aet;
             
-        // start at the first scanline containing an edge
-        // stop when ET and AET are both empty or reached screen height
-        for (int scanline = 0; (!et.IsEmpty || acl != nullptr) && scanline < screen_height; scanline++) {
-            // move edge from ET to AET
-            acl
-        }
-        */
-
-        // Iterate over scanlines
+        // Start at the first scanline containing an edge
+        // Stop when ET and AET are empty
+        for (int scanline = et.scanlines.begin()->first; (!et.IsEmpty() || !aet.IsEmpty()) && scanline < screen_height; scanline++) {
             // Move edges from ET to AET
-            // Stop when ET and AET are empty
-            // Draw pixels to buffer
+            Edge* e;
+            while((e = et.RemoveEdge(scanline)) != nullptr) {
+                printf("Moving edge (y_max=%d x_min=%f 1/m=%f) to AET\n",e->y_max, e->x_min, e->inv_slope);
+                // AET is keyed by x_int
+                int x_int = (int)round(e->x_min);
+                aet.InsertEdge(x_int, e);
+            }
+            printf("All edges found on scanline %d\n", scanline);
 
+            // Draw lines between pairs of edges in AET
+            printf("drawing scanline %d\n", scanline);
+            aet.PrintActiveEdgeTable();
+            assert((*aet.aet).size() % 2 == 0);
+            std::multimap<int,Edge*>::iterator it;
+            for (it = (*aet.aet).begin(); it != (*aet.aet).end(); it++) {
+                printf("AET @ scanline %d: \n", scanline);
+                int ix0 = it->first;
+                printf("ix0: %d\n", ix0);
+                Edge* cur = it->second;
+                it++;
+                int ix1 = it->first;
+                printf("ix1: %d\n", ix1);
+                Edge* next = it->second;
+
+                printf("(y_max=%d x_min=%f 1/m=%f) -> (y_max=%d x_min=%f 1/m=%f)\n",cur->y_max, cur->x_min, cur->inv_slope, next->y_max, next->x_min, next->inv_slope);
+                assert(ix0 >= 0 && ix0 < screen_width);
+                assert(ix1 >= 0 && ix1 < screen_width);
+                printf("drawing line\n");
+                SDL_RenderDrawLine(renderer, ix0, scanline, ix1, scanline);
+                printf("done drawing line\n");
+            }
+
+            // Update edges
+            aet.UpdateEdges(scanline);
+            printf("done updating edges\n");
+        }
     }
 }
 
