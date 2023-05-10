@@ -14,7 +14,7 @@
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
 SDL_Renderer *g_renderer = NULL;    // The window renderer
-float g_zbuffer[SCREEN_WIDTH][SCREEN_HEIGHT];   // Z depth buffer
+SDL_Surface *g_zbuffer = NULL;
 
 // Scene
 Model g_model;
@@ -85,7 +85,7 @@ void initScene()
     g_model.LoadModel(MODEL_PATH);
 
     // Reset depth buffer
-    memset(g_zbuffer, 0, sizeof(g_zbuffer));
+    // memset(g_zbuffer, 0, sizeof(g_zbuffer));
 
 }
 
@@ -96,12 +96,12 @@ void renderScene()
     SDL_RenderClear(g_renderer);
 
     // Reset depth buffer
-    memset(g_zbuffer, 0, sizeof(g_zbuffer));
+    // memset(g_zbuffer, 0, sizeof(g_zbuffer));
 
     // Redraw models
     SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xFF, 0xFF);
     // g_model.DrawEdges(g_camera, g_renderer);
-    g_model.DrawFaces(g_camera, g_renderer, g_zbuffer);
+    // g_model.DrawFaces(g_camera, g_renderer, g_zbuffer);
 
     //Update screen
     SDL_RenderPresent(g_renderer);

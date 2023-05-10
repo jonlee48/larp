@@ -429,7 +429,7 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float zbuffer[SCRE
             // Add only non-horizontal edges to ET
             if (comparefloats(iy0, iy1, FLOAT_TOL) != 0) {
 
-                /* Assume convex polygon - don't shorten edges
+                /* Assume convex polygon - don't shorten edges */
 
                 // Add to edge table
                 int y_max;
