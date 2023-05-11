@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <vector>
 #include <cmath>
-#include <map>
 
 //================================
 // ModelFace
@@ -23,60 +22,6 @@ public:
 
     ~ModelFace() {
     }
-};
-
-//================================
-// EdgeTable
-//================================
-
-class Edge {
-public:
-    int y_max;
-    float x_min; 
-    float inv_slope;
-    Edge *next;
-
-public:
-    Edge(int y_max, float x_min, float inv_slope); 
-
-    ~Edge() {
-    }
-};
-
-class EdgeTable {
-public:
-    std::map<int,Edge*> scanlines;
-
-public:
-    EdgeTable() {}
-
-    ~EdgeTable();
-
-    int InsertEdge(int scanline, Edge* edge);
-
-    Edge* RemoveEdge(int scanline);
-
-    bool IsEmpty();
-
-    void PrintEdgeTable();
-};
-
-class ActiveEdgeTable {
-public:
-    std::multimap<int,Edge*> *aet;
-
-public:
-    ActiveEdgeTable();
-
-    ~ActiveEdgeTable();
-
-    int InsertEdge(int x_int, Edge* edge);
-
-    bool IsEmpty();
-
-    void UpdateEdges(int delta);
-
-    void PrintActiveEdgeTable();
 };
 
 //================================
@@ -113,7 +58,7 @@ public:
     //=============================================
     void DrawEdges(Camera &camera, SDL_Renderer *renderer);
 
-    void DrawFaces(Camera &camera, SDL_Renderer *renderer, float zbuffer[SCREEN_WIDTH][SCREEN_HEIGHT]);
+    void DrawFaces(Camera &camera, SDL_Renderer *renderer, SDL_Surface *buffer);
 
     //=============================================
     // scale the model into the range of [ -0.9, 0.9 ]

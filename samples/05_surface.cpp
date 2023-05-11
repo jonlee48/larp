@@ -116,7 +116,6 @@ int main(int argc, char* args[])
 
     Uint32 last_time = SDL_GetTicks();
 
-    SetPixel(g_surface, 5, 50, 0, 255, 0, 255);
     while (!quit) 
     {
         while (SDL_PollEvent(&e)) 
@@ -131,8 +130,9 @@ int main(int argc, char* args[])
         SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(g_renderer);
 
-        //Draw something to the surface
-        SDL_FillRect(g_surface, NULL, SDL_MapRGBA(g_surface->format, 0, 128, 128, 255));
+        //Clear the surface
+        SDL_FillRect(g_surface, NULL, SDL_MapRGBA(g_surface->format, 0, 0, 0, 255));
+
         SetPixel(g_surface, 5, 5, 0, 255, 0, 255);
         SetPixel(g_surface, 6, 5, 255, 0, 0, 255);
         SetPixel(g_surface, 6, 5, 0, 0, 255, 255);
