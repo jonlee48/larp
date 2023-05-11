@@ -328,59 +328,51 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
     // For each face in model
     for (unsigned int i = 0; i < faces.size(); i++) {
         // Backface culling 
-        vec4 _v0 = perspective_transform * vec4(verts[faces[i].indices[0]], 1.0);
-        vec4 _v1 = perspective_transform * vec4(verts[faces[i].indices[1]], 1.0);
-        vec4 _v2 = perspective_transform * vec4(verts[faces[i].indices[2]], 1.0);
-        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z).normalize();
-        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z).normalize();
-        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z).normalize();
-        vec3 normal = ((v2-v1).cross(v0-v1));
+        vec4 _normal = model_matrix * vec4(face_normals[i], 1.0);
+        vec3 normal = vec3(_normal.x, _normal.y, _normal.z).normalize();
+        vec4 _view = model_matrix * vec4(verts[faces[i].indices[1]], 1.0);
+        vec3 view = (vec3(_view.x, _view.y, _view.z) - camera.position);
+        float dot = normal.dot(view);
 
-        // Don't draw any faces that point away from image plane (positive z)
-        if (BACK_FACE_CULLING && normal.z > 0.0)
+        // Visible if dot of normal and line of sight is positive
+        if (BACK_FACE_CULLING && comparefloats(dot,0.0,FLOAT_TOL) <= 0)
             continue;
 
         // Calculate surface normal
-        _v0 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0);
-        _v1 = model_view_matrix * vec4(verts[faces[i].indices[1]], 1.0);
-        _v2 = model_view_matrix * vec4(verts[faces[i].indices[2]], 1.0);
-        v0 = vec3(_v0.x, _v0.y, _v0.z);//.normalize();
-        v1 = vec3(_v1.x, _v1.y, _v1.z);//.normalize();
-        v2 = vec3(_v2.x, _v2.y, _v2.z);//.normalize();
-        vec3 surface_normal = ((v2-v1).cross(v0-v1));//.normalize();
+        vec4 _v0 = model_matrix * vec4(verts[faces[i].indices[0]], 1.0);
+        vec4 _v1 = model_matrix * vec4(verts[faces[i].indices[1]], 1.0);
+        vec4 _v2 = model_matrix * vec4(verts[faces[i].indices[2]], 1.0);
+        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z);
+        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z);
+        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z);
+        // Note: switching cross product A, B because of some weirdness with LH coordinate system
+        // vec3 surface_normal = ((v2-v1).cross(v0-v1)).normalize();
+        vec3 surface_normal = ((v0-v1).cross(v2-v1)).normalize();
 
-        // vec4 _vsn = model_view_matrix * vec4(face_normals[i], 1.0);
-        // vec3 vsn = vec3(_vsn.x, _vsn.y, _vsn.z).normalize();
-
-        // Calculate lighting direction (assume infinitely far away)
-        vec4 _vc = model_view_matrix * vec4(0.0, 0.0, 0.0, 1.0);
-        vec3 vc = vec3(_vc.x, _vc.y, _vc.z).normalize();
-        vec3 light_direction = light.LightDirection(vc);
-
-        // Calculate viewing direction (assume infinitely far away)
-        vec3 view_direction = -vc;
+        // Calculate viewing and lighting direction (assume both are infinitely far away)
+        vec4 _center = model_matrix * vec4(0.0, 0.0, 0.0, 1.0);
+        vec3 center = vec3(_center.x, _center.y, _center.z);
+        vec3 view_direction = (camera.position - center).normalize();
+        vec3 light_direction = light.LightDirection(center);
 
         // Calculate intensity
         vec3 intensity = material.PhongIllumination(view_direction, surface_normal, light_direction, light);
-        // Uint8 r = (Uint8)round((surface_normal.x/2.0 + 0.5) * 255);
-        // Uint8 g = (Uint8)round((surface_normal.y/2.0 + 0.5) * 255);
-        // Uint8 b = (Uint8)round((surface_normal.z/2.0 + 0.5) * 255);
-        Uint8 r = (Uint8)round((intensity.x/2.0 + 0.5) * 255);
-        Uint8 g = (Uint8)round((intensity.y/2.0 + 0.5) * 255);
-        Uint8 b = (Uint8)round((intensity.z/2.0 + 0.5) * 255);
+        Uint8 r = (Uint8)floor(abs(intensity.x) * 256);
+        Uint8 g = (Uint8)floor(abs(intensity.y) * 256);
+        Uint8 b = (Uint8)floor(abs(intensity.z) * 256);
 
         SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
 
-        // printf("surface_normal: (x: %f\ty: %f\tz: %f)\n", surface_normal.x, surface_normal.y, surface_normal.z);
         // printf("intensity: (x: %f\ty: %f\tz: %f)\n", intensity.x, intensity.y, intensity.z);
         // printf("rgb: (r: %d\tg: %d\tb: %d)\n", r, g, b);
-        if (i == 0 || i == 12 || i == 39) {
+        // if (i == 0 || i == 12 || i == 39 || i == 53) {
+        if (0) {
             printf("%d\n",i);
-            printf("view_center: (x: %f\ty: %f\tz: %f)\n", vc.x, vc.y, vc.z);
+            printf("center: (x: %f\ty: %f\tz: %f)\n", center.x, center.y, center.z);
             printf("v0: (x: %f\ty: %f\tz: %f)\n", v0.x, v0.y, v0.z);
             printf("v1: (x: %f\ty: %f\tz: %f)\n", v1.x, v1.y, v1.z);
             printf("v2: (x: %f\ty: %f\tz: %f)\n", v2.x, v2.y, v2.z);
-            // printf("alt_normal: (x: %f\ty: %f\tz: %f)\n", vsn.x, vsn.y, vsn.z);
+            // printf("normal: (x: %f\ty: %f\tz: %f)\n", normal.x, normal.y, normal.z);
             printf("surface_normal: (x: %f\ty: %f\tz: %f)\n", surface_normal.x, surface_normal.y, surface_normal.z);
             printf("light_direction: (x: %f\ty: %f\tz: %f)\n", light_direction.x, light_direction.y, light_direction.z);
             printf("view_direction: (x: %f\ty: %f\tz: %f)\n", view_direction.x, view_direction.y, view_direction.z);
@@ -388,6 +380,7 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
             printf("intensity: (r: %d\tg: %d\tb: %d)\n", r, g, b);
             printf("\n\n");
             // SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
+            SDL_SetRenderDrawColor(renderer, (Uint8)face_colors[i].x, (Uint8)face_colors[i].y, (Uint8)face_colors[i].z, 0xFF);
         }
         else {
             // SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);

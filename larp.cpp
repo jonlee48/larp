@@ -76,16 +76,16 @@ void end(void)
 void initScene()
 {
     // Init light
-    vec3 light_position = vec3(0.0, 0.0, 40.0);
-    vec3 ambient_color = vec3(0.0, 1.0, 0.0);
+    vec3 light_position = vec3(0.0, 0.0, -40.0);
+    vec3 ambient_color = vec3(1.0, 1.0, 1.0);
     vec3 parallel_color = vec3(1.0, 1.0, 1.0);
     g_light = Light(light_position, ambient_color, parallel_color);
 
     // Init material
     vec3 material_color = vec3(1.0, 0.0, 0.0);
-    float k_ambient = 0.0;
-    float k_diffuse = 0.5;
-    float k_specular = 0.0;
+    float k_ambient = 0.3;
+    float k_diffuse = 0.4;
+    float k_specular = 0.3;
     float shininess = 50;
     g_material0 = Material(material_color, k_ambient, k_diffuse, k_specular, shininess);
     g_material1 = Material(material_color, k_ambient, k_diffuse, k_specular, shininess);
@@ -132,7 +132,7 @@ void renderScene()
             break;
         case FLAT:
             g_model0.DrawFlat(g_camera, g_light, g_material0, g_renderer, g_buffer);
-            // g_model1.DrawFlat(g_camera, g_light, g_material1, g_renderer, g_buffer);
+            g_model1.DrawFlat(g_camera, g_light, g_material1, g_renderer, g_buffer);
             break;
         case GOURAUD:
         case PHONG:
@@ -163,7 +163,7 @@ int main(int argc, char* args[])
 
         Uint32 last_time = SDL_GetTicks();
 
-        float i = 0.0;     // rotate
+        float i = M_PI;     // rotate
 
         while (!quit) 
         {
@@ -174,18 +174,18 @@ int main(int argc, char* args[])
                     quit = true;
                 }
             }
-            vec3 cam_pos = vec3(0.0, 0.0, 40.0);
+            vec3 cam_pos = vec3(0.0, 0.0, -40.0);
             g_camera = Camera(cam_pos, vec3());
 
             if (ANIMATE || framecount == 0) {
                 // rotate around Z-axis
                 g_model0.Scale(16);
                 g_model0.Rotate(0.0, i, M_PI); 
-                g_model0.Translate(vec3(10,0,0));
+                g_model0.Translate(vec3(10,0,2));
 
                 g_model1.Scale(16);
                 g_model1.Rotate(0.0, -i, M_PI); 
-                g_model1.Translate(vec3(-10,0,0));
+                g_model1.Translate(vec3(-10,0,1));
                 renderScene();
 
                 i += ROTATION_SPEED;
@@ -198,8 +198,8 @@ int main(int argc, char* args[])
 
             Uint32 current_time = SDL_GetTicks();
             Uint32 diff = current_time - last_time;
-            if (ANIMATE)
-                printf("Time: %d\n", diff);
+            // if (ANIMATE)
+            //     printf("Time: %d\n", diff);
             last_time = current_time;
         }
 	}

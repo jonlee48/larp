@@ -12,8 +12,8 @@
 // Render Settings
 // #define RENDER_TYPE WIREFRAME
 // #define RENDER_TYPE FACES 
-#define RENDER_TYPE DEPTH 
-// #define RENDER_TYPE FLAT
+// #define RENDER_TYPE DEPTH 
+#define RENDER_TYPE FLAT
 // #define RENDER_TYPE GOURAUD
 // #define RENDER_TYPE WIREFRAME
 #define BACK_FACE_CULLING true 

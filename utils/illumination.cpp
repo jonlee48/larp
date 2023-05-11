@@ -36,9 +36,10 @@ Material::Material(vec3 color, float k_ambient, float k_diffuse, float k_specula
 }
 
 vec3 Material::PhongIllumination(vec3 view, vec3 normal, vec3 light_direction, Light light) {
-    vec3 V = view.normalize();
-    vec3 N = normal.normalize();
-    vec3 L = light_direction.normalize();
+    // Assume V, N, L are normalized
+    vec3 V = view;
+    vec3 N = normal;
+    vec3 L = light_direction;
     vec3 R = 2 * (N.dot(L)) * N - L;
 
     vec3 i_ambient = this->k_ambient * light.ambient_color;
