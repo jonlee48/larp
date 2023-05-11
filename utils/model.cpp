@@ -357,9 +357,10 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
 
         // Calculate intensity
         vec3 intensity = material.PhongIllumination(view_direction, surface_normal, light_direction, light);
-        Uint8 r = (Uint8)floor(abs(intensity.x) * 255.0 + 0.5);
-        Uint8 g = (Uint8)floor(abs(intensity.y) * 255.0 + 0.5);
-        Uint8 b = (Uint8)floor(abs(intensity.z) * 255.0 + 0.5);
+
+        Uint8 r = (Uint8)floor(abs(intensity.x) * 255.0);
+        Uint8 g = (Uint8)floor(abs(intensity.y) * 255.0);
+        Uint8 b = (Uint8)floor(abs(intensity.z) * 255.0);
 
         // Draw RGB scaled by intensity
         SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
