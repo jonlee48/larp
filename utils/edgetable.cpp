@@ -96,7 +96,7 @@ void EdgeTable::PrintEdgeTable() {
         printf("Scanline %d\t: ", it->first);
         Edge* cur = it->second;
         while(cur != nullptr) {
-            printf("(y_max=%d x_min=%f 1/m=%f z_min=%f delz=%f) ",cur->y_max, cur->x_min, cur->inv_m, cur->z_min, cur->del_z);
+            printf("(y_max=%d x_min=%f 1/m=%f z_min=%f del_z=%f) ",cur->y_max, cur->x_min, cur->inv_m, cur->z_min, cur->del_z);
             cur = cur->next;
         }
         printf("\n");
@@ -166,6 +166,6 @@ void ActiveEdgeTable::PrintActiveEdgeTable() {
     printf("AET: \n");
     for (it=(*this->aet).begin(); it != (*this->aet).end(); it++) {
         Edge* cur = it->second;
-        printf("[%d](y_max=%d x_min=%f 1/m=%f z_min=%f delz=%f)\n",it->first, cur->y_max, cur->x_min, cur->inv_m, cur->z_min, cur->del_z);
+        printf("[%d](y_max=%d x_min=%f 1/m=%f z_min=%f del_z=%f)\n",it->first, cur->y_max, cur->x_min, cur->inv_m, cur->z_min, cur->del_z);
     }
 }

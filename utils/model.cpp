@@ -65,25 +65,17 @@ bool Model::LoadModel(const char* path)
         }
     }
     
-        // vec3 v0 = vec3(v40.x, v40.y, v40.z).normalize();
-        // vec3 v1 = vec3(v41.x, v41.y, v41.z).normalize();
-        // vec3 v2 = vec3(v42.x, v42.y, v42.z).normalize();
-        // vec3 normal = ((v1-v0).cross(v2-v1)).normalize();
     // calculate face normals
     for (size_t i = 0; i < numFaces; i++) {
         // get the first 3 verts of a face
         vec3 v0 = verts[faces[i].indices[0]];
         vec3 v1 = verts[faces[i].indices[1]];
         vec3 v2 = verts[faces[i].indices[2]];
-        // vec3 edge1 = v0 - v1;
-        // vec3 edge2 = v0 - v0;
-        // vec3 normal = edge2.cross(edge1);
         vec3 edge1 = v0 - v1;
         vec3 edge2 = v2 - v1;
         vec3 normal = edge2.cross(edge1);
-        // vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
-        
         face_normals[i] = normal.normalize();
+
         // Set face to random color
         face_colors[i] = vec3(rand() % 256, rand() % 256, rand() % 256);
     }
@@ -134,12 +126,12 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     // For each face in model
     for (unsigned int i = 0; i < faces.size(); i++) {
         // Backface culling 
-        vec4 v40 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0f);
-        vec4 v41 = model_view_matrix * vec4(verts[faces[i].indices[1]], 1.0f);
-        vec4 v42 = model_view_matrix * vec4(verts[faces[i].indices[2]], 1.0f);
-        vec3 v0 = vec3(v40.x, v40.y, v40.z).normalize();
-        vec3 v1 = vec3(v41.x, v41.y, v41.z).normalize();
-        vec3 v2 = vec3(v42.x, v42.y, v42.z).normalize();
+        vec4 _v0 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0f);
+        vec4 _v1 = model_view_matrix * vec4(verts[faces[i].indices[1]], 1.0f);
+        vec4 _v2 = model_view_matrix * vec4(verts[faces[i].indices[2]], 1.0f);
+        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z).normalize();
+        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z).normalize();
+        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z).normalize();
         vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
 
         // Don't draw any faces that point away from image plane (positive z)
@@ -175,12 +167,10 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
             double half_width = SCREEN_WIDTH / 2.0;
             double half_height = SCREEN_HEIGHT / 2.0;
 
-            double zoom = 1.0;
-
-            double x0 = zoom * half_width * v0.x + half_width;
-            double x1 = zoom * half_width * v1.x + half_width;
-            double y0 = zoom * half_height * v0.y + half_height;
-            double y1 = zoom * half_height * v1.y + half_height;
+            double x0 = half_width * v0.x + half_width;
+            double x1 = half_width * v1.x + half_width;
+            double y0 = half_height * v0.y + half_height;
+            double y1 = half_height * v1.y + half_height;
 
             // Round to closest int
             int ix0 = (int)round(x0);
@@ -194,8 +184,8 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
 }
 
 void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
-    double minimum_z = 100000.0;
-    double maximum_z = 0.0;
+    double minimum_d = 1.0;
+    double maximum_d = 0.0;
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -208,12 +198,12 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
     // For each face in model
     for (unsigned int i = 0; i < faces.size(); i++) {
         // Backface culling 
-        vec4 v40 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0f);
-        vec4 v41 = model_view_matrix * vec4(verts[faces[i].indices[1]], 1.0f);
-        vec4 v42 = model_view_matrix * vec4(verts[faces[i].indices[2]], 1.0f);
-        vec3 v0 = vec3(v40.x, v40.y, v40.z).normalize();
-        vec3 v1 = vec3(v41.x, v41.y, v41.z).normalize();
-        vec3 v2 = vec3(v42.x, v42.y, v42.z).normalize();
+        vec4 _v0 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0f);
+        vec4 _v1 = model_view_matrix * vec4(verts[faces[i].indices[1]], 1.0f);
+        vec4 _v2 = model_view_matrix * vec4(verts[faces[i].indices[2]], 1.0f);
+        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z).normalize();
+        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z).normalize();
+        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z).normalize();
         vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
 
         // Don't draw any faces that point away from image plane (positive z)
@@ -232,20 +222,17 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
             vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
             vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
-            vec3 v0 = vec3(h0.x/h0.w, h0.y/h0.w, h0.z/h0.w);//.normalize();
-            vec3 v1 = vec3(h1.x/h1.w, h1.y/h1.w, h1.z/h1.w);//.normalize();
-            // vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
+            vec3 v0 = vec3(h0.x/h0.w, h0.y/h0.w, h0.z/h0.w);
+            vec3 v1 = vec3(h1.x/h1.w, h1.y/h1.w, h1.z/h1.w);
 
             // Scale normalized coordinates [-1, 1] to device coordinates [SCREEN_WIDTH, SCREEN_HEIGHT]
             double half_width = SCREEN_WIDTH / 2.0;
             double half_height = SCREEN_HEIGHT / 2.0;
 
-            double zoom = 1.0;
-
-            double x0 = zoom * half_width * v0.x + half_width;
-            double x1 = zoom * half_width * v1.x + half_width;
-            double y0 = zoom * half_height * v0.y + half_height;
-            double y1 = zoom * half_height * v1.y + half_height;
+            double x0 = half_width * v0.x + half_width;
+            double x1 = half_width * v1.x + half_width;
+            double y0 = half_height * v0.y + half_height;
+            double y1 = half_height * v1.y + half_height;
             double z0 = v0.z;
             double z1 = v1.z;
 
@@ -263,9 +250,9 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
                 // Add to edge table
                 int y_max;      // higher y value
                 int y_min;      // lower y value
-                double x_min;    // x value at lower edge
-                double z_min;    // z value at lower edge
-                double del_z;    // rate of change from z_min
+                double x_min;   // x value at lower edge
+                double z_min;   // z value at lower edge
+                double del_z;   // rate of change from z_min
                 if (iy0 < iy1) {
                     // p0 is lower than p1
                     y_max = iy1;
@@ -287,9 +274,6 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
                 et.InsertEdge(y_min,e);
             }
         }
-        // printf("ET - FACE %d:\n", i);
-        // et.PrintEdgeTable();
-        // printf("\n");
 
         // Create active edge table 
         ActiveEdgeTable aet;
@@ -300,25 +284,21 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
             // Move edges from ET to AET
             Edge* e;
             while((e = et.RemoveEdge(y)) != nullptr) {
-                // printf("Moving edge (y_max=%d x_min=%f 1/m=%f) to AET\n",e->y_max, e->x_min, e->inv_m);
                 // AET is keyed by x_int
                 int x_int = (int)round(e->x_min);
                 aet.InsertEdge(x_int, e);
             }
 
             // Draw lines between pairs of edges in AET
-            // aet.PrintActiveEdgeTable();
             assert((*aet.aet).size() % 2 == 0);
             std::multimap<int,Edge*>::iterator it;
             for (it = (*aet.aet).begin(); it != (*aet.aet).end(); it++) {
-                // printf("AET @ scanline %d: \n", scanline);
                 int ix0 = it->first;
                 Edge *e0 = it->second;
                 it++;
                 int ix1 = it->first;
                 Edge *e1 = it->second;
 
-                // printf("(y_max=%d x_min=%f 1/m=%f) -> (y_max=%d x_min=%f 1/m=%f)\n",cur->y_max, cur->x_min, cur->inv_m, next->y_max, next->x_min, next->inv_m);
                 assert(ix0 >= 0 && ix0 < SCREEN_WIDTH);
                 assert(ix1 >= 0 && ix1 < SCREEN_WIDTH);
 
@@ -330,18 +310,19 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
 
                 for (int x = ix0; x <= ix1; x++) {
                     // Only draw point if point is in front of current z value
-                    // Or if nothing is there (z buf is 0)
-                    double d = z;//(z-0.5)*(z-0.5);
-                    if (d < minimum_z)
-                        minimum_z = z;
-                    if (d > maximum_z)
-                        maximum_z = z;
-                    // if (d < z_buffer[x][y][3]) {
+                    double d = z;
+                    if (d < minimum_d)
+                        minimum_d = d;
+                    if (d > maximum_d)
+                        maximum_d = d;
                     if (comparedoubles(d,z_buffer[x][y][3], FLOAT_TOL) == -1) {
                         z_buffer[x][y][3] = d;
-                        // Uint8 c = (Uint8)round(255.0-d*255.0); 
+
+                        // Draw depth map
+                        // Uint8 c = (Uint8)round(d*255.0); 
                         // printf("c: %d\n", c);
                         // SDL_SetRenderDrawColor(renderer, c, c, c, 0xFF);
+
                         SDL_RenderDrawPoint(renderer, x, y);
                     }
                     z += hor_del_z;
@@ -352,7 +333,7 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
             aet.UpdateEdges(y);
         }
     }
-    // printf("min z: %f max z: %f\n", minimum_z, maximum_z);
+    // printf("min z: %f max z: %f\n", minimum_d, maximum_d);
 }
 
 //=============================================
