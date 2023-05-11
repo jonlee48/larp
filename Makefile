@@ -11,7 +11,7 @@ BIN_DIR 	 = ./bin
 
 # Compiler and compiler flags
 CC      = g++
-CFLAGS  = -Wall -g
+CFLAGS  = -Wall -ggdb3
 
 # Linker flag to link with SDL2 library
 LFLAGS  = -lSDL2 -lSDL2_image
@@ -22,7 +22,9 @@ LFLAGS  = -lSDL2 -lSDL2_image
 # `make` runs the first rule `all` when no target is specified
 # `all` has no commands, except to run the BIN and SAMPLE_BINS 
 # rules when those files are missing or have changed (newer timestamp than `all`)
-all: $(SAMPLE_BINS) $(BIN)
+all: $(BIN) 
+
+samples: $(SAMPLE_BINS)
 
 # Generate the SAMPLE_BINS using automatic variables
 # i.e. CC CFLAGS LFLAGS %.cpp -o %.bin

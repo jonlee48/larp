@@ -2,6 +2,7 @@
 #include "mat4.h"
 #include "vec3.h"
 #include "camera.h"
+#include "constants.h"
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -31,6 +32,7 @@ public:
     std::vector< vec3 > verts;
     std::vector< vec3 > verts_normals;
     std::vector< vec3 > face_normals;
+    std::vector< vec3 > face_colors;
     std::vector< ModelFace > faces;
     mat4 model_matrix;
     mat4 scale_matrix;
@@ -56,6 +58,8 @@ public:
     //=============================================
     void DrawEdges(Camera &camera, SDL_Renderer *renderer);
 
+    void DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
+
     //=============================================
     // scale the model into the range of [ -0.9, 0.9 ]
     void ResizeModel(void);
@@ -66,9 +70,9 @@ public:
     // Transform Model
     //=============================================
 
-    void Scale(float scale);
+    void Scale(double scale);
 
     void Translate(vec3 offset);
 
-    void Rotate(float x, float y, float z);
+    void Rotate(double x, double y, double z);
 };
