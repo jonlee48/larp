@@ -30,14 +30,14 @@ public:
 
 public:
     Camera() {
-        vec3 position = vec3(20.0f, 0.0f, 0.0f);
+        vec3 position = vec3(20.0, 0.0, 0.0);
         vec3 look_at = vec3();
         Camera(position, look_at);
     }
     Camera(vec3 position, vec3 look_at) {
         this->position = position;
         this->look_at = look_at;
-        world_up = vec3(0.0f,1.0f,0.0f);
+        world_up = vec3(0.0,1.0,0.0);
 
         normal = (look_at - position).normalize();
         right = (normal.cross(world_up)).normalize();

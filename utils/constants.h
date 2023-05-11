@@ -6,14 +6,14 @@
 #define ASPECT_RATIO SCREEN_WIDTH/SCREEN_HEIGHT
 #define WINDOW_NAME "Perspective Vector Display System"
 #define FRAMES_PER_SECOND 60
-#define ANIMATE true
+#define ANIMATE 0
 #define ROTATION_SPEED 0.05
 
 // Render Settings
 // #define RENDER_TYPE WIREFRAME
 // #define RENDER_TYPE FACES 
-#define RENDER_TYPE DEPTH 
-// #define RENDER_TYPE FLAT
+// #define RENDER_TYPE DEPTH 
+#define RENDER_TYPE FLAT
 // #define RENDER_TYPE GOURAUD
 // #define RENDER_TYPE WIREFRAME
 #define BACK_FACE_CULLING true 
@@ -30,9 +30,9 @@
 // #define MODEL_PATH "assets/dfiles/jcolumn.d"
 // #define MODEL_PATH "assets/dfiles/jbase.d"
 // #define MODEL_PATH "assets/dfiles/floor.d"
-#define MODEL_PATH "assets/dfiles/cow.d"         // coooow
+// #define MODEL_PATH "assets/dfiles/cow.d"         // coooow
 // #define MODEL_PATH "assets/dfiles/atc.d"         // huuuge model
-// #define MODEL_PATH "assets/dfiles/better-ball.d" // very good test
+#define MODEL_PATH "assets/dfiles/better-ball.d" // very good test
 // #define MODEL_PATH "assets/dfiles/house.d"
 // #define MODEL_PATH "assets/dfiles/nteapot6.d"    // looks good
 // #define MODEL_PATH "assets/dfiles/ronny.d"

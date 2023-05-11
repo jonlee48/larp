@@ -60,7 +60,7 @@ vec4 vec4::operator*(float scalar) const {
 }
 
 vec4 vec4::operator/(float scalar) const {
-	float inv = 1.0f / scalar;
+	float inv = 1.0 / scalar;
 	return vec4(x * inv, y * inv, z * inv, w * inv);
 }
 
@@ -97,7 +97,7 @@ vec4& vec4::operator*=(float scalar) {
 }
 
 vec4& vec4::operator/=(float scalar) {
-	float inv = 1.0f / scalar;
+	float inv = 1.0 / scalar;
 	x *= inv;
 	y *= inv;
 	z *= inv;
@@ -130,7 +130,7 @@ vec4& vec4::normalize(void) {
 		x = y = z = w = 0;
 	}
 	else {
-		float inv = 1.0f / mag;
+		float inv = 1.0 / mag;
 
 		x *= inv;
 		y *= inv;
@@ -150,7 +150,6 @@ const float* vec4::ptr(void) const {
 }
 
 vec4 operator*(float scalar, const vec4& v) {
-    printf("x: %f y: %f z: %f w: %f\n", v.x * scalar, v.y * scalar, v.z * scalar, v.w * scalar);
 	return vec4(v.x * scalar, v.y * scalar, v.z * scalar, v.w * scalar);
 }
 

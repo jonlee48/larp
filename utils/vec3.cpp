@@ -50,7 +50,7 @@ vec3 vec3::operator*(float scalar) const {
 }
 
 vec3 vec3::operator/(float scalar) const {
-	float inv = 1.0f / scalar;
+	float inv = 1.0 / scalar;
 	return vec3(x * inv, y * inv, z * inv);
 }
 
@@ -83,7 +83,7 @@ vec3& vec3::operator*=(float scalar) {
 }
 
 vec3& vec3::operator/=(float scalar) {
-	float inv = 1.0f / scalar;
+	float inv = 1.0 / scalar;
 	x *= inv;
 	y *= inv;
 	z *= inv;
@@ -123,7 +123,7 @@ vec3& vec3::normalize(void) {
 		x = y = z = 0;
 	}
 	else {
-		float inv = 1.0f / mag;
+		float inv = 1.0 / mag;
 
 		x *= inv;
 		y *= inv;
@@ -142,6 +142,5 @@ const float* vec3::ptr(void) const {
 }
 
 vec3 operator*(float scalar, const vec3& v) {
-    printf("x: %f y: %f z: %f\n", v.x * scalar, v.y * scalar, v.z * scalar);
 	return vec3(v.x * scalar, v.y * scalar, v.z * scalar);
 }
