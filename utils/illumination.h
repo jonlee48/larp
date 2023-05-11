@@ -4,13 +4,12 @@
 class Light {
 public:
     vec3 position;
-    vec3 ambient_color;
-    vec3 parallel_color;
+    vec3 color;
 
 public:
     Light();
 
-    Light(vec3 position, vec3 ambient_color, vec3 parallel_color);
+    Light(vec3 position, vec3 color);
 
     ~Light() {}
 
