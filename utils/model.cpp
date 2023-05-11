@@ -183,7 +183,7 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     }
 }
 
-void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
+void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
     float minimum_d = 1.0;
     float maximum_d = 0.0;
     // Apply transformation matrices to get from
@@ -315,8 +315,8 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float z_buffer[SCR
                         minimum_d = d;
                     if (d > maximum_d)
                         maximum_d = d;
-                    if (comparefloats(d,z_buffer[x][y][3], FLOAT_TOL) == -1) {
-                        z_buffer[x][y][3] = d;
+                    if (comparefloats(d,buffer[x][y][3], FLOAT_TOL) == -1) {
+                        buffer[x][y][3] = d;
 
                         // Draw depth map
                         // Uint8 c = (Uint8)round(d*255.0); 

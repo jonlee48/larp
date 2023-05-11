@@ -8,10 +8,10 @@
 class Edge {
 public:
     int y_max;      // scanline of high edge
-    float x_min;   // x value at low edge
-    float inv_m;   // 1/m slope
-    float z_min;   // z value at low edge
-    float del_z;   // rate of change from z_min
+    float x_min;    // x value at low edge
+    float inv_m;    // 1/m slope
+    float z_min;    // z value at low edge
+    float del_z;    // rate of change from z_min
     Edge *next;     // next edge in EdgeTable bucket
 
 public:

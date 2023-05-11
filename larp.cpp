@@ -16,12 +16,13 @@
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
 SDL_Renderer *g_renderer = NULL;    // The window renderer
-float z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // RGB plus Z buffer
+float g_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // RGB plus Z buffer
 
 // Scene
 Model g_model0;
 Model g_model1;
 Camera g_camera;
+vec3 g_light;
 
 
 bool init(void)
@@ -94,17 +95,17 @@ void renderScene()
     // Clear the z buffer 
     for (int x = 0; x < SCREEN_WIDTH; x++) {
         for (int y = 0; y < SCREEN_HEIGHT; y++) {
-            z_buffer[x][y][0] = 0.0;
-            z_buffer[x][y][1] = 0.0;
-            z_buffer[x][y][2] = 0.0;
-            z_buffer[x][y][3] = 1.0;
+            g_buffer[x][y][0] = 0.0;
+            g_buffer[x][y][1] = 0.0;
+            g_buffer[x][y][2] = 0.0;
+            g_buffer[x][y][3] = 1.0;
         }
     }
 
     // Redraw models
     // g_model.DrawEdges(g_camera, g_renderer);
-    g_model0.DrawFaces(g_camera, g_renderer, z_buffer);
-    g_model1.DrawFaces(g_camera, g_renderer, z_buffer);
+    g_model0.DrawFaces(g_camera, g_renderer, g_buffer);
+    g_model1.DrawFaces(g_camera, g_renderer, g_buffer);
 
     // Update screen
     SDL_RenderPresent(g_renderer);
