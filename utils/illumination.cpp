@@ -4,7 +4,7 @@
 #include <cmath>
 
 Light::Light() {
-    this->position = vec3(0.0, -10.0, 0.0);
+    this->position = vec3(0.0, 0.0, 40.0);
     this->ambient_color = vec3(1.0, 1.0, 1.0);
     this->parallel_color = vec3(1.0, 1.0, 1.0);
 }
@@ -42,10 +42,10 @@ vec3 Material::PhongIllumination(vec3 view, vec3 normal, vec3 light_direction, L
     vec3 R = 2 * (N.dot(L)) * N - L;
 
     vec3 i_ambient = this->k_ambient * light.ambient_color;
-    printf("i_ambient: (x: %f\ty: %f\tz: %f)\n", i_ambient.x, i_ambient.y, i_ambient.z);
+    // printf("i_ambient: (x: %f\ty: %f\tz: %f)\n", i_ambient.x, i_ambient.y, i_ambient.z);
 
     vec3 i_diffuse = this->k_diffuse * (N.dot(L)) * light.parallel_color;
-    printf("i_diffuse: (x: %f\ty: %f\tz: %f)\n", i_diffuse.x, i_diffuse.y, i_diffuse.z);
+    // printf("i_diffuse: (x: %f\ty: %f\tz: %f)\n", i_diffuse.x, i_diffuse.y, i_diffuse.z);
 
     vec3 i_specular = this->k_specular * pow(V.dot(R),this->shininess) * light.parallel_color;
     // printf("i_specular: (x: %f\ty: %f\tz: %f)\n", i_specular.x, i_specular.y, i_specular.z);

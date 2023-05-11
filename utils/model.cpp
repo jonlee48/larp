@@ -347,9 +347,9 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
         vec4 _v0 = perspective_transform * vec4(verts[faces[i].indices[0]], 1.0);
         vec4 _v1 = perspective_transform * vec4(verts[faces[i].indices[1]], 1.0);
         vec4 _v2 = perspective_transform * vec4(verts[faces[i].indices[2]], 1.0);
-        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z).normalize();
-        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z).normalize();
-        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z).normalize();
+        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z);//.normalize();
+        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z);//.normalize();
+        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z);//.normalize();
         vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
 
         // Don't draw any faces that point away from image plane (positive z)
@@ -360,9 +360,9 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
         _v0 = model_view_matrix * vec4(verts[faces[i].indices[0]], 1.0);
         _v1 = model_view_matrix * vec4(verts[faces[i].indices[1]], 1.0);
         _v2 = model_view_matrix * vec4(verts[faces[i].indices[2]], 1.0);
-        v0 = vec3(_v0.x, _v0.y, _v0.z).normalize();
-        v1 = vec3(_v1.x, _v1.y, _v1.z).normalize();
-        v2 = vec3(_v2.x, _v2.y, _v2.z).normalize();
+        v0 = vec3(_v0.x, _v0.y, _v0.z);//.normalize();
+        v1 = vec3(_v1.x, _v1.y, _v1.z);//.normalize();
+        v2 = vec3(_v2.x, _v2.y, _v2.z);//.normalize();
         vec3 surface_normal = ((v2-v1).cross(v0-v1)).normalize();
 
         // vec4 _vsn = model_view_matrix * vec4(face_normals[i], 1.0);
@@ -387,10 +387,10 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
 
         SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
 
-        printf("surface_normal: (x: %f\ty: %f\tz: %f)\n", surface_normal.x, surface_normal.y, surface_normal.z);
+        // printf("surface_normal: (x: %f\ty: %f\tz: %f)\n", surface_normal.x, surface_normal.y, surface_normal.z);
         // printf("intensity: (x: %f\ty: %f\tz: %f)\n", intensity.x, intensity.y, intensity.z);
-        printf("rgb: (r: %d\tg: %d\tb: %d)\n", r, g, b);
-        if (i == 65) {
+        // printf("rgb: (r: %d\tg: %d\tb: %d)\n", r, g, b);
+        if (i == 0 || i == 12 || i == 39) {
             printf("%d\n",i);
             printf("view_center: (x: %f\ty: %f\tz: %f)\n", vc.x, vc.y, vc.z);
             printf("v0: (x: %f\ty: %f\tz: %f)\n", v0.x, v0.y, v0.z);
@@ -403,6 +403,7 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
             printf("intensity: (x: %f\ty: %f\tz: %f)\n", intensity.x, intensity.y, intensity.z);
             printf("intensity: (r: %d\tg: %d\tb: %d)\n", r, g, b);
             printf("\n\n");
+            // SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
         }
         else {
             // SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);

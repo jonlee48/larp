@@ -6,7 +6,7 @@
 #define ASPECT_RATIO SCREEN_WIDTH/SCREEN_HEIGHT
 #define WINDOW_NAME "Perspective Vector Display System"
 #define FRAMES_PER_SECOND 60
-#define ANIMATE 0
+#define ANIMATE 1
 #define ROTATION_SPEED 0.05
 
 // Render Settings
