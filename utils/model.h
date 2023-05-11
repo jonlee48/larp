@@ -31,8 +31,7 @@ public:
 class Model {
 public:
     std::vector< vec3 > verts;
-    std::vector< vec3 > verts_normals;
-    std::vector< vec3 > face_normals;
+    std::vector< vec3 > backface_normals;
     std::vector< vec3 > face_colors;
     std::vector< ModelFace > faces;
     mat4 model_matrix;
@@ -63,7 +62,7 @@ public:
 
     void DrawFlat(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
 
-    // void DrawGouraud(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
+    void DrawGouraud(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
 
     // void DrawPhong(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
 
