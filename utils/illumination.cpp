@@ -41,13 +41,10 @@ vec3 Material::PhongIllumination(vec3 view, vec3 normal, vec3 light_direction, L
     vec3 R = 2 * (N.dot(L)) * N - L;
 
     vec3 i_ambient = this->k_ambient * this->color;
-    // printf("i_ambient: (x: %f\ty: %f\tz: %f)\n", i_ambient.x, i_ambient.y, i_ambient.z);
 
     vec3 i_diffuse = this->k_diffuse * (N.dot(L)) * this->color;
-    // printf("i_diffuse: (x: %f\ty: %f\tz: %f)\n", i_diffuse.x, i_diffuse.y, i_diffuse.z);
 
     vec3 i_specular = this->k_specular * pow(V.dot(R),this->shininess) * light.color;
-    // printf("i_specular: (x: %f\ty: %f\tz: %f)\n", i_specular.x, i_specular.y, i_specular.z);
     
     vec3 i_total = i_ambient + i_diffuse + i_specular;
     return i_total;

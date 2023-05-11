@@ -357,37 +357,12 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
 
         // Calculate intensity
         vec3 intensity = material.PhongIllumination(view_direction, surface_normal, light_direction, light);
-        Uint8 r = (Uint8)floor(abs(intensity.x) * 256);
-        Uint8 g = (Uint8)floor(abs(intensity.y) * 256);
-        Uint8 b = (Uint8)floor(abs(intensity.z) * 256);
+        Uint8 r = (Uint8)floor(abs(intensity.x) * 255.0 + 0.5);
+        Uint8 g = (Uint8)floor(abs(intensity.y) * 255.0 + 0.5);
+        Uint8 b = (Uint8)floor(abs(intensity.z) * 255.0 + 0.5);
 
+        // Draw RGB scaled by intensity
         SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
-
-        // printf("intensity: (x: %f\ty: %f\tz: %f)\n", intensity.x, intensity.y, intensity.z);
-        // printf("rgb: (r: %d\tg: %d\tb: %d)\n", r, g, b);
-        // if (i == 0 || i == 12 || i == 39 || i == 53) {
-        if (0) {
-            printf("%d\n",i);
-            printf("center: (x: %f\ty: %f\tz: %f)\n", center.x, center.y, center.z);
-            printf("v0: (x: %f\ty: %f\tz: %f)\n", v0.x, v0.y, v0.z);
-            printf("v1: (x: %f\ty: %f\tz: %f)\n", v1.x, v1.y, v1.z);
-            printf("v2: (x: %f\ty: %f\tz: %f)\n", v2.x, v2.y, v2.z);
-            // printf("normal: (x: %f\ty: %f\tz: %f)\n", normal.x, normal.y, normal.z);
-            printf("surface_normal: (x: %f\ty: %f\tz: %f)\n", surface_normal.x, surface_normal.y, surface_normal.z);
-            printf("light_direction: (x: %f\ty: %f\tz: %f)\n", light_direction.x, light_direction.y, light_direction.z);
-            printf("view_direction: (x: %f\ty: %f\tz: %f)\n", view_direction.x, view_direction.y, view_direction.z);
-            printf("intensity: (x: %f\ty: %f\tz: %f)\n", intensity.x, intensity.y, intensity.z);
-            printf("intensity: (r: %d\tg: %d\tb: %d)\n", r, g, b);
-            printf("\n\n");
-            // SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
-            SDL_SetRenderDrawColor(renderer, (Uint8)face_colors[i].x, (Uint8)face_colors[i].y, (Uint8)face_colors[i].z, 0xFF);
-        }
-        else {
-            // SDL_SetRenderDrawColor(renderer, 0xAA, 0xAA, 0xAA, 0xFF);
-        }
-
-        // Use constant random color
-        // SDL_SetRenderDrawColor(renderer, (Uint8)face_colors[i].x, (Uint8)face_colors[i].y, (Uint8)face_colors[i].z, 0xFF);
 
         EdgeTable et;
         // For each edge in face 
