@@ -106,13 +106,6 @@ void renderScene()
     SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(g_renderer);
 
-    //Set to blank screen
-    if (RENDER_TYPE == DEPTH) {
-        SDL_Rect screen_rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-        SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_RenderFillRect(g_renderer, &screen_rect);
-    }
-
     // Clear the z buffer 
     for (int x = 0; x < SCREEN_WIDTH; x++) {
         for (int y = 0; y < SCREEN_HEIGHT; y++) {
@@ -199,12 +192,14 @@ int main(int argc, char* args[])
                 framecount++;
             }
 
-            SDL_Delay(1000/FRAMES_PER_SECOND);
+            #ifdef FRAMES_PER_SECOND
+                SDL_Delay(1000/FRAMES_PER_SECOND);
+            #endif
 
             Uint32 current_time = SDL_GetTicks();
             Uint32 diff = current_time - last_time;
-            // if (ANIMATE)
-            //     printf("Time: %d\n", diff);
+            if (ANIMATE)
+                printf("Time: %d\n", diff);
             last_time = current_time;
         }
 	}

@@ -127,29 +127,15 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     // For each face in model
     for (unsigned int i = 0; i < faces.size(); i++) {
         // Backface culling 
-        vec4 _v0 = perspective_transform * vec4(verts[faces[i].indices[0]], 1.0);
-        vec4 _v1 = perspective_transform * vec4(verts[faces[i].indices[1]], 1.0);
-        vec4 _v2 = perspective_transform * vec4(verts[faces[i].indices[2]], 1.0);
-        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z).normalize();
-        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z).normalize();
-        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z).normalize();
-        vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
-
-        // Don't draw any faces that point away from image plane (positive z)
-        if (BACK_FACE_CULLING && normal.z > 0.0)
-            continue;
-        /*
-        // Backface culling (alternative method)
-        vec4 v3 = (model_matrix) * vec4(face_normals[i], 1.0);
-        vec3 normalp = vec3(v3.x, v3.y, v3.z).normalize();
-        vec4 v4 = (model_matrix) * vec4(verts[faces[i].indices[1]], 1.0);
-        vec3 lineofsight = (vec3(v4.x, v4.y, v4.z) - camera.position).normalize();
-        float dot = normalp.dot(lineofsight);
+        vec4 _normal = model_matrix * vec4(face_normals[i], 1.0);
+        vec3 normal = vec3(_normal.x, _normal.y, _normal.z).normalize();
+        vec4 _view = model_matrix * vec4(verts[faces[i].indices[1]], 1.0);
+        vec3 view = (vec3(_view.x, _view.y, _view.z) - camera.position);
+        float dot = normal.dot(view);
 
         // Visible if dot of normal and line of sight is positive
-        if (BACK_FACE_CULLING && dot < 0.0)
+        if (BACK_FACE_CULLING && comparefloats(dot,0.0,FLOAT_TOL) <= 0)
             continue;
-        */
 
         // For each edge in face 
         for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
@@ -197,16 +183,14 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREE
     // For each face in model
     for (unsigned int i = 0; i < faces.size(); i++) {
         // Backface culling 
-        vec4 _v0 = perspective_transform * vec4(verts[faces[i].indices[0]], 1.0);
-        vec4 _v1 = perspective_transform * vec4(verts[faces[i].indices[1]], 1.0);
-        vec4 _v2 = perspective_transform * vec4(verts[faces[i].indices[2]], 1.0);
-        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z).normalize();
-        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z).normalize();
-        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z).normalize();
-        vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
+        vec4 _normal = model_matrix * vec4(face_normals[i], 1.0);
+        vec3 normal = vec3(_normal.x, _normal.y, _normal.z).normalize();
+        vec4 _view = model_matrix * vec4(verts[faces[i].indices[1]], 1.0);
+        vec3 view = (vec3(_view.x, _view.y, _view.z) - camera.position);
+        float dot = normal.dot(view);
 
-        // Don't draw any faces that point away from image plane (positive z)
-        if (BACK_FACE_CULLING && normal.z > 0.0)
+        // Visible if dot of normal and line of sight is positive
+        if (BACK_FACE_CULLING && comparefloats(dot,0.0,FLOAT_TOL) <= 0)
             continue;
 
         // Use constant random color
@@ -314,7 +298,7 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREE
 
                         // Draw depth map
                         if (render_depth) {
-                            Uint8 c = (Uint8)round(255 * ((z - 0.8) / 0.2)); 
+                            Uint8 c = (Uint8)round(255 * ((z - 0.95) / 0.05)); 
                             SDL_SetRenderDrawColor(renderer, c, c, c, 0xFF);
                         }
 
@@ -347,10 +331,10 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
         vec4 _v0 = perspective_transform * vec4(verts[faces[i].indices[0]], 1.0);
         vec4 _v1 = perspective_transform * vec4(verts[faces[i].indices[1]], 1.0);
         vec4 _v2 = perspective_transform * vec4(verts[faces[i].indices[2]], 1.0);
-        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z);//.normalize();
-        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z);//.normalize();
-        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z);//.normalize();
-        vec3 normal = ((v2-v1).cross(v0-v1)).normalize();
+        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z).normalize();
+        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z).normalize();
+        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z).normalize();
+        vec3 normal = ((v2-v1).cross(v0-v1));
 
         // Don't draw any faces that point away from image plane (positive z)
         if (BACK_FACE_CULLING && normal.z > 0.0)
@@ -363,7 +347,7 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
         v0 = vec3(_v0.x, _v0.y, _v0.z);//.normalize();
         v1 = vec3(_v1.x, _v1.y, _v1.z);//.normalize();
         v2 = vec3(_v2.x, _v2.y, _v2.z);//.normalize();
-        vec3 surface_normal = ((v2-v1).cross(v0-v1)).normalize();
+        vec3 surface_normal = ((v2-v1).cross(v0-v1));//.normalize();
 
         // vec4 _vsn = model_view_matrix * vec4(face_normals[i], 1.0);
         // vec3 vsn = vec3(_vsn.x, _vsn.y, _vsn.z).normalize();
