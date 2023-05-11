@@ -8,14 +8,14 @@
 class Edge {
 public:
     int y_max;
-    float x_min; 
-    float inv_m;
-    float z_min; 
-    float del_z; // rate of change from z_min
+    double x_min; 
+    double inv_m;
+    double z_min; 
+    double del_z; // rate of change from z_min
     Edge *next;
 
 public:
-    Edge(int y_max, float x_min, float inv_m, float z_min, float del_z); 
+    Edge(int y_max, double x_min, double inv_m, double z_min, double del_z); 
 
     ~Edge() {}
 };

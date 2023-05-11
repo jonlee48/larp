@@ -18,7 +18,7 @@ I wrote several utility classes to provide vector/matrix functionality and struc
 
 ```c++
 Class vec3 {		// vec3.h
-    vec3(float x, float y, float z);
+    vec3(double x, double y, double z);
     dot(vec3 v);
     cross(vec3 v);
     normalize();
@@ -42,9 +42,9 @@ Class Model {		// model.h
     DrawEdges(Camera camera, SDL_Renderer *renderer);
     ResizeModel();
     CalcBound(vec3 min, vec3 max);
-    Scale(float scale);
+    Scale(double scale);
     Translate(vec3 offset);
-    Rotate(float x, float y, float z);
+    Rotate(double x, double y, double z);
 }
 ```
 
@@ -103,10 +103,10 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
                 // Render the line 
                 
                 // Scale normalized coordinates to device coordinates
-                float x1 = 200.0*h0.x+400;
-                float x2 = 200.0*h1.x+400;
-                float y1 = 200.0*h0.y+600;
-                float y2 = 200.0*h1.y+600;
+                double x1 = 200.0*h0.x+400;
+                double x2 = 200.0*h1.x+400;
+                double y1 = 200.0*h0.y+600;
+                double y2 = 200.0*h1.y+600;
                 // flip y axis
                 y1 = 600 - y1;
                 y2 = 600 - y2;

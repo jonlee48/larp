@@ -4,15 +4,15 @@
 #include "utils.h"
 #include "constants.h"
 
-float radians(float degrees) {
+double radians(double degrees) {
     return degrees * M_PI / 180.0;
 }
 
-float degrees(float radians) {
+double degrees(double radians) {
     return radians * 180.0 / M_PI;
 }
 
-int comparefloats(float x, float y, float epsilon) {
+int comparedoubles(double x, double y, double epsilon) {
     if (fabs(x-y) < epsilon) {
         return 0;
     }

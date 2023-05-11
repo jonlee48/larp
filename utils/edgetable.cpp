@@ -6,7 +6,7 @@
 //=============================================
 // Edge 
 //=============================================
-Edge::Edge(int y_max, float x_min, float inv_m, float z_min, float del_z) {
+Edge::Edge(int y_max, double x_min, double inv_m, double z_min, double del_z) {
     this->y_max = y_max;
     this->x_min = x_min;
     this->inv_m= inv_m;

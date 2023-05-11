@@ -8,9 +8,9 @@
 
 // Constants
 #define ASPECT_RATIO 800.0/600.0;
-#define FIELD_OF_VIEW_Y 45;
-#define NEAR_CLIPPING_PLANE 0.01;
-#define FAR_CLIPPING_PLANE 10.0;
+#define FIELD_OF_VIEW_Y 90;
+#define NEAR_CLIPPING_PLANE 0.1;//1.0;//0.1;
+#define FAR_CLIPPING_PLANE 1000.0;//100.0; //10.0;
 
 class Camera {
 public:
@@ -24,18 +24,18 @@ public:
 
     vec3 look_at;   // Reference point to orbit around
     // Euler angles (radians)
-    //float yaw;
-    //float pitch;
+    //double yaw;
+    //double pitch;
 
     // Viewing Frustrum
-    float aspect_ratio; // Display width/height
-    float fov_y;        // Field of View for Y axis in degrees
-    float z_near;       // Near clipping plane
-    float z_far;        // Far clipping plane
+    double aspect_ratio; // Display width/height
+    double fov_y;        // Field of View for Y axis in degrees
+    double z_near;       // Near clipping plane
+    double z_far;        // Far clipping plane
 
 public:
     Camera() {
-        vec3 position = vec3(10.0f, 0.0f, 0.0f);
+        vec3 position = vec3(20.0f, 0.0f, 0.0f);
         vec3 look_at = vec3();
         Camera(position, look_at);
     }
@@ -59,8 +59,8 @@ public:
     }
 
     // TODO: add these functions to move the camera around
-    // void setCamera(const vec3 &look_at, const vec3 &position, float aspect_ratio, float fov_y, float z_near, float z_far);
-    // bool UpdateOrientation(float yaw, float pitch);
+    // void setCamera(const vec3 &look_at, const vec3 &position, double aspect_ratio, double fov_y, double z_near, double z_far);
+    // bool UpdateOrientation(double yaw, double pitch);
     // bool UpdateLookAt(vec3 &look_at);
     // bool UpdatePosition(vec3 &position);
 
