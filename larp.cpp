@@ -7,6 +7,7 @@
 #include "utils/camera.h"
 #include "utils/constants.h"
 #include "utils/utils.h"
+#include "utils/illumination.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
 #include <assert.h>
@@ -22,7 +23,9 @@ float g_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // RGB plus Z buffer
 Model g_model0;
 Model g_model1;
 Camera g_camera;
-vec3 g_light;
+Light g_light;
+Material g_material0;
+Material g_material1;
 
 
 bool init(void)
@@ -72,12 +75,29 @@ void end(void)
 
 void initScene()
 {
+    // Init light
+    vec3 light_position = vec3(0.0, -10, 0.0);
+    vec3 ambient_color = vec3(1.0, 1.0, 1.0);
+    vec3 parallel_color = vec3(1.0, 1.0, 1.0);
+    g_light = Light(light_position, ambient_color, parallel_color);
+
+    // Init material
+    vec3 material_color = vec3(1.0, 0.0, 0.0);
+    float k_ambient = 0.3;
+    float k_diffuse = 0.3;
+    float k_specular = 0.3;
+    float shininess = 20;
+    g_material0 = Material(material_color, k_ambient, k_diffuse, k_specular, shininess);
+    g_material1 = Material(material_color, k_ambient, k_diffuse, k_specular, shininess);
+
     // Load objects
     g_model0 = Model();
     g_model0.LoadModel(MODEL_PATH);
 
     g_model1 = Model();
     g_model1.LoadModel(MODEL_PATH);
+
+    
 }
 
 void renderScene()
@@ -87,10 +107,11 @@ void renderScene()
     SDL_RenderClear(g_renderer);
 
     //Set to blank screen
-    SDL_Rect screen_rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-    SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0x00, 0xFF);
-    SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderFillRect(g_renderer, &screen_rect);
+    if (RENDER_TYPE == DEPTH) {
+        SDL_Rect screen_rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+        SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_RenderFillRect(g_renderer, &screen_rect);
+    }
 
     // Clear the z buffer 
     for (int x = 0; x < SCREEN_WIDTH; x++) {
@@ -103,9 +124,27 @@ void renderScene()
     }
 
     // Redraw models
-    // g_model.DrawEdges(g_camera, g_renderer);
-    g_model0.DrawFaces(g_camera, g_renderer, g_buffer);
-    g_model1.DrawFaces(g_camera, g_renderer, g_buffer);
+    switch (RENDER_TYPE) {
+        case WIREFRAME:
+            g_model0.DrawEdges(g_camera, g_renderer);
+            g_model1.DrawEdges(g_camera, g_renderer);
+            break;
+        case FACES:
+            g_model0.DrawFaces(g_camera, g_renderer, g_buffer, false);
+            g_model1.DrawFaces(g_camera, g_renderer, g_buffer, false);
+            break;
+        case DEPTH:
+            g_model0.DrawFaces(g_camera, g_renderer, g_buffer, true);
+            g_model1.DrawFaces(g_camera, g_renderer, g_buffer, true);
+            break;
+        case FLAT:
+            // g_model0.DrawFlat(g_camera, g_renderer, g_buffer);
+            // g_model1.DrawFlat(g_camera, g_renderer, g_buffer);
+            break;
+        case GOURAUD:
+        case PHONG:
+            break;
+    }
 
     // Update screen
     SDL_RenderPresent(g_renderer);

@@ -122,7 +122,7 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     mat4 view_matrix = camera.GetViewMatrix();
     mat4 perspective_matrix = camera.GetPerspectiveMatrix();
     mat4 model_view_matrix = perspective_matrix * view_matrix * model_matrix;
-    
+
     // For each face in model
     for (unsigned int i = 0; i < faces.size(); i++) {
         // Backface culling 
@@ -137,7 +137,6 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
         // Don't draw any faces that point away from image plane (positive z)
         if (BACK_FACE_CULLING && normal.z > 0.0)
             continue;
-
         /*
         // Backface culling (alternative method)
         vec4 v3 = (model_matrix) * vec4(face_normals[i], 1.0f);
@@ -160,8 +159,8 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
 
             vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
             vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
-            vec3 v0 = vec3(h0.x, h0.y, h0.z).normalize();
-            vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
+            vec3 v0 = vec3(h0.x/h0.w, h0.y/h0.w, h0.z/h0.w);
+            vec3 v1 = vec3(h1.x/h1.w, h1.y/h1.w, h1.z/h1.w);
 
             // Scale normalized coordinates [-1, 1] to device coordinates [SCREEN_WIDTH, SCREEN_HEIGHT]
             float half_width = SCREEN_WIDTH / 2.0;
@@ -178,12 +177,13 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
             int iy0 = (int)round(y0);
             int iy1 = (int)round(y1);
 
+            SDL_SetRenderDrawColor(renderer, (Uint8)face_colors[i].x, (Uint8)face_colors[i].y, (Uint8)face_colors[i].z, 0xFF);
             SDL_RenderDrawLine(renderer, ix0, iy0, ix1, iy1);
         }
     }
 }
 
-void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
+void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4], bool render_depth) {
     float minimum_d = 1.0;
     float maximum_d = 0.0;
     // Apply transformation matrices to get from
@@ -210,7 +210,7 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREE
         if (BACK_FACE_CULLING && normal.z > 0.0)
             continue;
 
-        // Randomize color
+        // Use constant random color
         SDL_SetRenderDrawColor(renderer, (Uint8)face_colors[i].x, (Uint8)face_colors[i].y, (Uint8)face_colors[i].z, 0xFF);
 
         EdgeTable et;
@@ -319,9 +319,10 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREE
                         buffer[x][y][3] = d;
 
                         // Draw depth map
-                        // Uint8 c = (Uint8)round(d*255.0); 
-                        // printf("c: %d\n", c);
-                        // SDL_SetRenderDrawColor(renderer, c, c, c, 0xFF);
+                        if (render_depth) {
+                            Uint8 c = (Uint8)round(255 * ((d - 0.8) / 0.2)); 
+                            SDL_SetRenderDrawColor(renderer, c, c, c, 0xFF);
+                        }
 
                         SDL_RenderDrawPoint(renderer, x, y);
                     }
