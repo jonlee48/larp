@@ -49,7 +49,7 @@ bool Model::LoadModel(const char* path)
 
     // read vertices
     for (unsigned int i = 0; i < numVerts; i++) {
-        fscanf(fp, "%lf%lf%lf", &verts[i].x, &verts[i].y, &verts[i].z);
+        fscanf(fp, "%f%f%f", &verts[i].x, &verts[i].y, &verts[i].z);
     }
 
 
@@ -144,7 +144,7 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
         vec3 normalp = vec3(v3.x, v3.y, v3.z).normalize();
         vec4 v4 = (model_matrix) * vec4(verts[faces[i].indices[1]], 1.0f);
         vec3 lineofsight = (vec3(v4.x, v4.y, v4.z) - camera.position).normalize();
-        double dot = normalp.dot(lineofsight);
+        float dot = normalp.dot(lineofsight);
 
         // Visible if dot of normal and line of sight is positive
         if (BACK_FACE_CULLING && dot < 0.0)
@@ -164,13 +164,13 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
             vec3 v1 = vec3(h1.x, h1.y, h1.z).normalize();
 
             // Scale normalized coordinates [-1, 1] to device coordinates [SCREEN_WIDTH, SCREEN_HEIGHT]
-            double half_width = SCREEN_WIDTH / 2.0;
-            double half_height = SCREEN_HEIGHT / 2.0;
+            float half_width = SCREEN_WIDTH / 2.0;
+            float half_height = SCREEN_HEIGHT / 2.0;
 
-            double x0 = half_width * v0.x + half_width;
-            double x1 = half_width * v1.x + half_width;
-            double y0 = half_height * v0.y + half_height;
-            double y1 = half_height * v1.y + half_height;
+            float x0 = half_width * v0.x + half_width;
+            float x1 = half_width * v1.x + half_width;
+            float y0 = half_height * v0.y + half_height;
+            float y1 = half_height * v1.y + half_height;
 
             // Round to closest int
             int ix0 = (int)round(x0);
@@ -183,9 +183,9 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     }
 }
 
-void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
-    double minimum_d = 1.0;
-    double maximum_d = 0.0;
+void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
+    float minimum_d = 1.0;
+    float maximum_d = 0.0;
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -226,33 +226,33 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
             vec3 v1 = vec3(h1.x/h1.w, h1.y/h1.w, h1.z/h1.w);
 
             // Scale normalized coordinates [-1, 1] to device coordinates [SCREEN_WIDTH, SCREEN_HEIGHT]
-            double half_width = SCREEN_WIDTH / 2.0;
-            double half_height = SCREEN_HEIGHT / 2.0;
+            float half_width = SCREEN_WIDTH / 2.0;
+            float half_height = SCREEN_HEIGHT / 2.0;
 
-            double x0 = half_width * v0.x + half_width;
-            double x1 = half_width * v1.x + half_width;
-            double y0 = half_height * v0.y + half_height;
-            double y1 = half_height * v1.y + half_height;
-            double z0 = v0.z;
-            double z1 = v1.z;
+            float x0 = half_width * v0.x + half_width;
+            float x1 = half_width * v1.x + half_width;
+            float y0 = half_height * v0.y + half_height;
+            float y1 = half_height * v1.y + half_height;
+            float z0 = v0.z;
+            float z1 = v1.z;
 
             // Round points 0 and 1
             int iy0 = (int)round(y0);
             int iy1 = (int)round(y1);
 
-            double inv_m = (x1 - x0)/(y1 - y0);
+            float inv_m = (x1 - x0)/(y1 - y0);
 
             // Add only non-horizontal edges to ET
-            if (comparedoubles(iy0, iy1, FLOAT_TOL) != 0) {
+            if (comparefloats(iy0, iy1, FLOAT_TOL) != 0) {
 
                 /* Assume convex polygon - don't shorten edges */
 
                 // Add to edge table
                 int y_max;      // higher y value
                 int y_min;      // lower y value
-                double x_min;   // x value at lower edge
-                double z_min;   // z value at lower edge
-                double del_z;   // rate of change from z_min
+                float x_min;   // x value at lower edge
+                float z_min;   // z value at lower edge
+                float del_z;   // rate of change from z_min
                 if (iy0 < iy1) {
                     // p0 is lower than p1
                     y_max = iy1;
@@ -303,19 +303,19 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
                 assert(ix1 >= 0 && ix1 < SCREEN_WIDTH);
 
                 // Fill in points between and including edges
-                double z0 = e0->z_min;
-                double z1 = e1->z_min;
-                double hor_del_z = (z1 - z0)/(ix1 - ix0);
-                double z = z0;
+                float z0 = e0->z_min;
+                float z1 = e1->z_min;
+                float hor_del_z = (z1 - z0)/(ix1 - ix0);
+                float z = z0;
 
                 for (int x = ix0; x <= ix1; x++) {
                     // Only draw point if point is in front of current z value
-                    double d = z;
+                    float d = z;
                     if (d < minimum_d)
                         minimum_d = d;
                     if (d > maximum_d)
                         maximum_d = d;
-                    if (comparedoubles(d,z_buffer[x][y][3], FLOAT_TOL) == -1) {
+                    if (comparefloats(d,z_buffer[x][y][3], FLOAT_TOL) == -1) {
                         z_buffer[x][y][3] = d;
 
                         // Draw depth map
@@ -351,7 +351,7 @@ void Model::ResizeModel(void)
     // max side
     vec3 size = max - min;
 
-    double r = size.x;
+    float r = size.x;
     if (size.y > r) {
         r = size.y;
     }
@@ -421,7 +421,7 @@ bool Model::CalcBound(vec3& min, vec3& max)
 // Transform Model
 //=============================================
 
-void Model::Scale(double scale) 
+void Model::Scale(float scale) 
 {
     scale_matrix[0] = scale;
     scale_matrix[5] = scale;
@@ -435,7 +435,7 @@ void Model::Translate(vec3 offset)
     translate_matrix[11] = offset.z;
 }
 
-void Model::Rotate(double x, double y, double z) 
+void Model::Rotate(float x, float y, float z) 
 {
     // apply R = Rz(Ry(Rx))
     rotate_matrix[0] = cos(z) * cos(y);

@@ -26,9 +26,9 @@ mat4 Camera::GetViewMatrix()
 
 mat4 Camera::GetPerspectiveMatrix()
 {
-    double d = z_near;
-    double f = z_far;
-    double doh = 1.0/tan(radians(fov_y/2.0)); // distance to near clipping plane/height of near clipping plane
+    float d = z_near;
+    float f = z_far;
+    float doh = 1.0/tan(radians(fov_y/2.0)); // distance to near clipping plane/height of near clipping plane
     mat4 pers(
         doh/aspect_ratio, 0.0f, 0.0f, 0.0f,
         0.0f, doh, 0.0f, 0.0f,

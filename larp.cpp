@@ -16,7 +16,7 @@
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
 SDL_Renderer *g_renderer = NULL;    // The window renderer
-double z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // RGB plus Z buffer
+float z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // RGB plus Z buffer
 
 // Scene
 Model g_model0;
@@ -130,7 +130,7 @@ int main(int argc, char* args[])
 
         Uint32 last_time = SDL_GetTicks();
 
-        double i = 0.0f;     // rotate
+        float i = 0.0f;     // rotate
 
         while (!quit) 
         {

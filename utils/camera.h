@@ -19,14 +19,14 @@ public:
 
     vec3 look_at;   // Reference point to orbit around
     // Euler angles (radians)
-    //double yaw;
-    //double pitch;
+    //float yaw;
+    //float pitch;
 
     // Viewing Frustrum
-    double aspect_ratio; // Display width/height
-    double fov_y;        // Field of View for Y axis in degrees
-    double z_near;       // Near clipping plane
-    double z_far;        // Far clipping plane
+    float aspect_ratio; // Display width/height
+    float fov_y;        // Field of View for Y axis in degrees
+    float z_near;       // Near clipping plane
+    float z_far;        // Far clipping plane
 
 public:
     Camera() {
@@ -54,8 +54,8 @@ public:
     }
 
     // TODO: add these functions to move the camera around
-    // void setCamera(const vec3 &look_at, const vec3 &position, double aspect_ratio, double fov_y, double z_near, double z_far);
-    // bool UpdateOrientation(double yaw, double pitch);
+    // void setCamera(const vec3 &look_at, const vec3 &position, float aspect_ratio, float fov_y, float z_near, float z_far);
+    // bool UpdateOrientation(float yaw, float pitch);
     // bool UpdateLookAt(vec3 &look_at);
     // bool UpdatePosition(vec3 &position);
 

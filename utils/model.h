@@ -58,7 +58,7 @@ public:
     //=============================================
     void DrawEdges(Camera &camera, SDL_Renderer *renderer);
 
-    void DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
+    void DrawFaces(Camera &camera, SDL_Renderer *renderer, float z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
 
     //=============================================
     // scale the model into the range of [ -0.9, 0.9 ]
@@ -70,9 +70,9 @@ public:
     // Transform Model
     //=============================================
 
-    void Scale(double scale);
+    void Scale(float scale);
 
     void Translate(vec3 offset);
 
-    void Rotate(double x, double y, double z);
+    void Rotate(float x, float y, float z);
 };
