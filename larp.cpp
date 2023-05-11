@@ -6,8 +6,10 @@
 #include "utils/model.h"
 #include "utils/camera.h"
 #include "utils/constants.h"
+#include "utils/utils.h"
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <assert.h>
 #include <string>
 #include <cmath>
 
@@ -101,15 +103,16 @@ void renderScene()
     SDL_RenderFillRect(g_renderer, &screen_rect);
 
     // Clear the z buffer 
-    // memset(z_buffer, 0, sizeof(z_buffer));
+    // memset(z_buffer, 1.0, sizeof(z_buffer[0][0][0])*SCREEN_WIDTH*SCREEN_HEIGHT*4);
     for (int x = 0; x < SCREEN_WIDTH; x++) {
         for (int y = 0; y < SCREEN_HEIGHT; y++) {
             z_buffer[x][y][0] = 0.0;
             z_buffer[x][y][1] = 0.0;
             z_buffer[x][y][2] = 0.0;
-            z_buffer[x][y][3] = 100000000000.0;
+            z_buffer[x][y][3] = 1.0;
         }
     }
+
     // Init alpha (z) channel to max value
     // SDL_FillRect(g_buffer, NULL, SDL_MapRGBA(g_buffer->format, 0, 0, 0, 255));
 
@@ -172,7 +175,7 @@ int main(int argc, char* args[])
                 g_model1.Translate(vec3(0,0,-10));
                 renderScene();
 
-                i += 0.01;
+                i += ROTATION_SPEED;
                 framecount++;
             }
 

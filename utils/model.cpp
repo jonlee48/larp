@@ -6,8 +6,6 @@
 #include "edgetable.h"
 #include <assert.h>
 
-#define FLOAT_TOL 1e-6
-
 //=============================================
 // Load Model
 //=============================================
@@ -338,11 +336,10 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
                         minimum_z = z;
                     if (d > maximum_z)
                         maximum_z = z;
-                    // if (z_buffer[x][y][3] < 10000000)
-                    //     printf("z: %.20lf \t z_buf: %.20lf\n", z, z_buffer[x][y][3]);
-                    if (d < z_buffer[x][y][3]) {
+                    // if (d < z_buffer[x][y][3]) {
+                    if (comparedoubles(d,z_buffer[x][y][3], FLOAT_TOL) == -1) {
                         z_buffer[x][y][3] = d;
-                        Uint8 c = (Uint8)round(d*255.0); 
+                        // Uint8 c = (Uint8)round(255.0-d*255.0); 
                         // printf("c: %d\n", c);
                         // SDL_SetRenderDrawColor(renderer, c, c, c, 0xFF);
                         SDL_RenderDrawPoint(renderer, x, y);
@@ -355,7 +352,7 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, double z_buffer[SC
             aet.UpdateEdges(y);
         }
     }
-    printf("min z: %f max z: %f\n", minimum_z, maximum_z);
+    // printf("min z: %f max z: %f\n", minimum_z, maximum_z);
 }
 
 //=============================================

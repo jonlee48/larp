@@ -1,16 +1,11 @@
 #pragma once
 #include "vec3.h"
 #include "mat4.h"
+#include "constants.h"
 
 //================================
 // Camera
 //================================
-
-// Constants
-#define ASPECT_RATIO 800.0/600.0;
-#define FIELD_OF_VIEW_Y 90;
-#define NEAR_CLIPPING_PLANE 0.1;//1.0;//0.1;
-#define FAR_CLIPPING_PLANE 1000.0;//100.0; //10.0;
 
 class Camera {
 public:
