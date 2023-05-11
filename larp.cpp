@@ -14,7 +14,8 @@
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
 SDL_Renderer *g_renderer = NULL;    // The window renderer
-SDL_Surface *g_buffer = NULL;       // Surface used as Z-buffer
+// SDL_Surface *g_buffer = NULL;
+float z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // RGB plus Z buffer
 
 // Scene
 Model g_model;
@@ -52,12 +53,12 @@ bool init(void)
     SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
 
-    // Initialize surface
-    g_buffer = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_PIXELFORMAT_RGBA8888);
-    if (g_buffer == NULL) {
-        printf("Surface could not be created. SDL Error: %s\n", SDL_GetError());
-        return false;
-    }
+    // // Initialize surface
+    // g_buffer = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_PIXELFORMAT_RGBA8888);
+    // if (g_buffer == NULL) {
+    //     printf("Surface could not be created. SDL Error: %s\n", SDL_GetError());
+    //     return false;
+    // }
 
     return true;
 }
@@ -67,10 +68,10 @@ void end(void)
 	// Destroy window
     SDL_DestroyRenderer(g_renderer);
 	SDL_DestroyWindow(g_window);
-	SDL_FreeSurface(g_buffer);
+	// SDL_FreeSurface(g_buffer);
     g_window = NULL;
     g_renderer = NULL;
-    g_buffer = NULL;
+    // g_buffer = NULL;
 
 	// Quit SDL subsystems
 	SDL_Quit();
@@ -90,24 +91,33 @@ void renderScene()
     SDL_RenderClear(g_renderer);
 
     //Set to blank screen
-    SDL_Rect screen_rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-    SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-    SDL_RenderDrawRect(g_renderer, &screen_rect);
+    // SDL_Rect screen_rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    // SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    // SDL_RenderDrawRect(g_renderer, &screen_rect);
 
     // Clear the z buffer 
+    // memset(z_buffer, 0, sizeof(z_buffer));
+    for (int x = 0; x < SCREEN_WIDTH; x++) {
+        for (int y = 0; y < SCREEN_HEIGHT; y++) {
+            z_buffer[x][y][0] = 0.0;
+            z_buffer[x][y][1] = 0.0;
+            z_buffer[x][y][2] = 0.0;
+            z_buffer[x][y][3] = 100000000000.0;
+        }
+    }
     // Init alpha (z) channel to max value
-    SDL_FillRect(g_buffer, NULL, SDL_MapRGBA(g_buffer->format, 0, 0, 0, 255));
+    // SDL_FillRect(g_buffer, NULL, SDL_MapRGBA(g_buffer->format, 0, 0, 0, 255));
 
     // Redraw models
     // SDL_SetRenderDrawColor(g_renderer, 0x00, 0x00, 0xFF, 0xFF);
     // g_model.DrawEdges(g_camera, g_renderer);
-    g_model.DrawFaces(g_camera, g_renderer, g_buffer);
+    g_model.DrawFaces(g_camera, g_renderer, z_buffer);
 
     // Update screen
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(g_renderer, g_buffer);
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
-    SDL_RenderCopy(g_renderer, texture, NULL, NULL);
-    SDL_DestroyTexture(texture);
+    // SDL_Texture *texture = SDL_CreateTextureFromSurface(g_renderer, g_buffer);
+    // SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
+    // SDL_RenderCopy(g_renderer, texture, NULL, NULL);
+    // SDL_DestroyTexture(texture);
     SDL_RenderPresent(g_renderer);
 
 }

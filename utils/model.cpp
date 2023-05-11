@@ -195,7 +195,9 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     }
 }
 
-void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, SDL_Surface *buffer) {
+void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
+    float minimum_z = 100000.0;
+    float maximum_z = 0.0;
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -326,21 +328,19 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, SDL_Surface *buffe
                 float z1 = e1->z_min;
                 float hor_del_z = (z1 - z0)/(ix1 - ix0);
                 float z = z0;
+
                 for (int x = ix0; x <= ix1; x++) {
-                    // Check z buffer depth
-                    Uint8 r, g, b, a;
-                    GetPixel(buffer, x, y, &r, &g, &b, &a);
                     // Only draw point if point is in front of current z value
-                    if ((Uint8)round(255*((z-0.85)/0.15)) < a) {
-                    // if (1) {
-                        SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
-                        // a = (Uint8)abs(z); // won't work if z > 255
-                        a = (Uint8)round(255*((z-0.85)/0.15));
-                        printf("z: %f a: %d\n", z, a);
-                        SetPixel(buffer, x, y, r, g, b, a);
-                        // SDL_RenderDrawPoint(renderer, x, y);
+                    // Or if nothing is there (z buf is 0)
+                    // printf("z: %f \t z_buf: %f\n", z, z_buffer[x][y][3]);
+                    if (z < minimum_z)
+                        minimum_z = z;
+                    if (z > maximum_z)
+                         maximum_z= z;
+                    if (z < z_buffer[x][y][3]) {
+                        z_buffer[x][y][3] = z;
+                        SDL_RenderDrawPoint(renderer, x, y);
                     }
-                    assert(z < 255.0 && z > 0.0);
                     z += hor_del_z;
                 }
             }
@@ -349,6 +349,7 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, SDL_Surface *buffe
             aet.UpdateEdges(y);
         }
     }
+    // printf("min z: %f max z: %f\n", minimum_z, maximum_z);
 }
 
 //=============================================

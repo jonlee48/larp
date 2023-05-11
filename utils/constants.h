@@ -3,8 +3,8 @@
 #define SCREEN_HEIGHT 600
 #define BACK_FACE_CULLING true 
 #define WINDOW_NAME "Perspective Vector Display System"
-#define FRAMES_PER_SECOND 600
-#define ANIMATE true
+#define FRAMES_PER_SECOND 60
+#define ANIMATE 1
 
 // #define MODEL_PATH "assets/dfiles/shuttle.d"
 // #define MODEL_PATH "assets/dfiles/soccer.d"
