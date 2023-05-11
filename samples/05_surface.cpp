@@ -130,6 +130,11 @@ int main(int argc, char* args[])
         SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
         SDL_RenderClear(g_renderer);
 
+        //Set to blank screen
+        SDL_Rect screen_rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+        SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+        SDL_RenderDrawRect(g_renderer, &screen_rect);
+
         //Clear the surface
         SDL_FillRect(g_surface, NULL, SDL_MapRGBA(g_surface->format, 0, 0, 0, 255));
 
@@ -150,7 +155,6 @@ int main(int argc, char* args[])
         if (r == 255) SetPixel(g_surface, 6, 5, 0, 0, 255, 255);
 
         SDL_Texture *texture = SDL_CreateTextureFromSurface(g_renderer, g_surface);
-
         SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
         SDL_RenderCopy(g_renderer, texture, NULL, NULL);
         SDL_DestroyTexture(texture);
@@ -162,9 +166,9 @@ int main(int argc, char* args[])
 
 
         //Render green outlined quad
-        SDL_Rect outlineRect = {SCREEN_WIDTH/6, SCREEN_HEIGHT/6, SCREEN_WIDTH*2/3, SCREEN_HEIGHT*2/3};
-        SDL_SetRenderDrawColor(g_renderer, 0x00, 0xFF, 0x00, 0xFF);
-        SDL_RenderDrawRect(g_renderer, &outlineRect);
+        // SDL_Rect outlineRect = {SCREEN_WIDTH/6, SCREEN_HEIGHT/6, SCREEN_WIDTH*2/3, SCREEN_HEIGHT*2/3};
+        // SDL_SetRenderDrawColor(g_renderer, 0x00, 0xFF, 0x00, 0xFF);
+        // SDL_RenderDrawRect(g_renderer, &outlineRect);
         
         /*
         //Draw blue horizontal line

@@ -290,15 +290,15 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, SDL_Surface *buffe
         // et.PrintEdgeTable();
         // printf("\n");
 
-        // active edge table 
+        // Create active edge table 
         ActiveEdgeTable aet;
             
         // Start at the first scanline containing an edge
         // Stop when ET and AET are empty
-        for (int scanline = et.scanlines.begin()->first; (!et.IsEmpty() || !aet.IsEmpty()) && scanline < SCREEN_HEIGHT; scanline++) {
+        for (int y = et.scanlines.begin()->first; (!et.IsEmpty() || !aet.IsEmpty()) && y < SCREEN_HEIGHT; y++) {
             // Move edges from ET to AET
             Edge* e;
-            while((e = et.RemoveEdge(scanline)) != nullptr) {
+            while((e = et.RemoveEdge(y)) != nullptr) {
                 // printf("Moving edge (y_max=%d x_min=%f 1/m=%f) to AET\n",e->y_max, e->x_min, e->inv_m);
                 // AET is keyed by x_int
                 int x_int = (int)round(e->x_min);
@@ -312,17 +312,41 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, SDL_Surface *buffe
             for (it = (*aet.aet).begin(); it != (*aet.aet).end(); it++) {
                 // printf("AET @ scanline %d: \n", scanline);
                 int ix0 = it->first;
+                Edge *e0 = it->second;
                 it++;
                 int ix1 = it->first;
+                Edge *e1 = it->second;
 
                 // printf("(y_max=%d x_min=%f 1/m=%f) -> (y_max=%d x_min=%f 1/m=%f)\n",cur->y_max, cur->x_min, cur->inv_m, next->y_max, next->x_min, next->inv_m);
                 assert(ix0 >= 0 && ix0 < SCREEN_WIDTH);
                 assert(ix1 >= 0 && ix1 < SCREEN_WIDTH);
-                SDL_RenderDrawLine(renderer, ix0, scanline, ix1, scanline);
+
+                // Fill in points between and including edges
+                float z0 = e0->z_min;
+                float z1 = e1->z_min;
+                float hor_del_z = (z1 - z0)/(ix1 - ix0);
+                float z = z0;
+                for (int x = ix0; x <= ix1; x++) {
+                    // Check z buffer depth
+                    Uint8 r, g, b, a;
+                    GetPixel(buffer, x, y, &r, &g, &b, &a);
+                    // Only draw point if point is in front of current z value
+                    if ((Uint8)round(255*((z-0.85)/0.15)) < a) {
+                    // if (1) {
+                        SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
+                        // a = (Uint8)abs(z); // won't work if z > 255
+                        a = (Uint8)round(255*((z-0.85)/0.15));
+                        printf("z: %f a: %d\n", z, a);
+                        SetPixel(buffer, x, y, r, g, b, a);
+                        // SDL_RenderDrawPoint(renderer, x, y);
+                    }
+                    assert(z < 255.0 && z > 0.0);
+                    z += hor_del_z;
+                }
             }
 
             // Update edges
-            aet.UpdateEdges(scanline);
+            aet.UpdateEdges(y);
         }
     }
 }

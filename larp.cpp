@@ -89,6 +89,11 @@ void renderScene()
     SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
     SDL_RenderClear(g_renderer);
 
+    //Set to blank screen
+    SDL_Rect screen_rect = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+    SDL_RenderDrawRect(g_renderer, &screen_rect);
+
     // Clear the z buffer 
     // Init alpha (z) channel to max value
     SDL_FillRect(g_buffer, NULL, SDL_MapRGBA(g_buffer->format, 0, 0, 0, 255));
@@ -98,7 +103,11 @@ void renderScene()
     // g_model.DrawEdges(g_camera, g_renderer);
     g_model.DrawFaces(g_camera, g_renderer, g_buffer);
 
-    //Update screen
+    // Update screen
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(g_renderer, g_buffer);
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_NONE);
+    SDL_RenderCopy(g_renderer, texture, NULL, NULL);
+    SDL_DestroyTexture(texture);
     SDL_RenderPresent(g_renderer);
 
 }

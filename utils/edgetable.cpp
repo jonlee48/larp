@@ -6,10 +6,12 @@
 //=============================================
 // Edge 
 //=============================================
-Edge::Edge(int y_max, float x_min, float inv_m) {
+Edge::Edge(int y_max, float x_min, float inv_m, float z_min, float del_z) {
     this->y_max = y_max;
     this->x_min = x_min;
     this->inv_m= inv_m;
+    this->z_min = z_min;
+    this->del_z = del_z;
     this->next = nullptr;
 }
 
@@ -94,7 +96,7 @@ void EdgeTable::PrintEdgeTable() {
         printf("Scanline %d\t: ", it->first);
         Edge* cur = it->second;
         while(cur != nullptr) {
-            printf("(y_max=%d x_min=%f 1/m=%f) ",cur->y_max, cur->x_min, cur->inv_m);
+            printf("(y_max=%d x_min=%f 1/m=%f z_min=%f delz=%f) ",cur->y_max, cur->x_min, cur->inv_m, cur->z_min, cur->del_z);
             cur = cur->next;
         }
         printf("\n");
@@ -124,7 +126,6 @@ ActiveEdgeTable::~ActiveEdgeTable() {
 
 int ActiveEdgeTable::InsertEdge(int x_int, Edge* edge) {
     assert(this->aet != nullptr);
-    // (*this->aet)[x_int] = edge;
     (*this->aet).insert(std::pair<int,Edge*>(x_int, edge));
     return 0;
 }
@@ -143,8 +144,9 @@ void ActiveEdgeTable::UpdateEdges(int scanline) {
     for (it=(*this->aet).begin(); it != (*this->aet).end(); it++) {
         Edge* cur = it->second;
         // Update edge and move it to new table
-        if (cur->y_max - 1> scanline) {
+        if (cur->y_max > scanline + 1) {
             cur->x_min += cur->inv_m;
+            cur->z_min += cur->del_z;
             int x_int = (int)round(cur->x_min);
             (*new_aet).insert(std::pair<int,Edge*>(x_int, cur));
         }
@@ -164,6 +166,6 @@ void ActiveEdgeTable::PrintActiveEdgeTable() {
     printf("AET: \n");
     for (it=(*this->aet).begin(); it != (*this->aet).end(); it++) {
         Edge* cur = it->second;
-        printf("[%d](y_max=%d x_min=%f 1/m=%f)\n",it->first, cur->y_max, cur->x_min, cur->inv_m);
+        printf("[%d](y_max=%d x_min=%f 1/m=%f z_min=%f delz=%f)\n",it->first, cur->y_max, cur->x_min, cur->inv_m, cur->z_min, cur->del_z);
     }
 }
