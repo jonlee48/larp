@@ -9,6 +9,7 @@
 #include "utils/utils.h"
 #include "utils/illumination.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <assert.h>
 #include <string>
@@ -56,7 +57,14 @@ bool init(void)
         printf("Renderer could not be created. SDL Error: %s\n", SDL_GetError());
         return false;
     }
-    
+
+    // Initialize PNG loading
+    int img_flags = IMG_INIT_PNG;
+    if (!(IMG_Init(img_flags) & img_flags)) {
+        printf("SDL_image could not initialize. SDL_image Error: %s\n", IMG_GetError());
+        return false;
+    }
+
     // Initialize renderer color
     SDL_SetRenderDrawColor(g_renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 
@@ -72,6 +80,7 @@ void end(void)
     g_renderer = NULL;
 
 	// Quit SDL subsystems
+    IMG_Quit();
 	SDL_Quit();
 }
 
@@ -90,9 +99,18 @@ void initScene()
     float shininess = 20;
     assert((k_ambient + k_diffuse + k_specular) <= 1.0);
     g_material0 = Material(material_color0, k_ambient, k_diffuse, k_specular, shininess);
+    if (RENDER_TYPE == TEXTURE) {
+        if(!g_material0.LoadTexture(TEXTURE_0)) {
+            printf("Error loading texture\n");
+            exit(1);
+        }
+    }
     #ifdef MODEL_1
     vec3 material_color1 = vec3(0.0, 0.0, 1.0);
     g_material1 = Material(material_color1, k_ambient, k_diffuse, k_specular, shininess);
+    if (RENDER_TYPE == TEXTURE) {
+        g_material1.LoadTexture(TEXTURE_1);
+    }
     #endif
 
     // Load objects
@@ -165,6 +183,12 @@ void renderScene()
             g_model0.DrawPhong(g_camera, g_light, g_material0, g_renderer, g_buffer, true);
             #ifdef MODEL_1
             g_model1.DrawPhong(g_camera, g_light, g_material1, g_renderer, g_buffer, true);
+            #endif
+            break;
+        case TEXTURE:
+            g_model0.DrawTexture(g_camera, g_light, g_material0, g_renderer, g_buffer);
+            #ifdef MODEL_1
+            g_model1.DrawTexture(g_camera, g_light, g_material1, g_renderer, g_buffer);
             #endif
             break;
     }

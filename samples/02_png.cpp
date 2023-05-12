@@ -64,7 +64,7 @@ bool load_media(void)
     bool success = true;
 
     // Load splash image
-    std::string splash_image_path = "assets/jl_logo.png";
+    std::string splash_image_path = "assets/forest.png";
     g_splash_image = load_surface(splash_image_path);
     if (g_splash_image == NULL) 
     {
