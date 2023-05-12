@@ -54,9 +54,9 @@
 // #define MODEL_0 "assets/dfiles/bunny.d"       // also large model
 // #define TEXTURE_0 "assets/forest.png"         // environment map
 // #define TEXTURE_0 "assets/street.png"         // environment map
-// #define TEXTURE_0 "assets/marble.png"         // texture
-// #define TEXTURE_0 "assets/dirt.png"         // texture
-#define TEXTURE_0 "assets/brick.png"         // texture
+#define TEXTURE_0 "assets/marble.png"         // texture (looks the best)
+// #define TEXTURE_0 "assets/sand.png"           // texture (good on sphere)
+// #define TEXTURE_0 "assets/brick.png"          // texture (good on sphere)
 
 //================================
 // Model 1 (comment out to remove)
@@ -68,17 +68,18 @@
 // #define MODEL_1 "assets/dfiles/floor.d"
 // #define MODEL_1 "assets/dfiles/cow.d"         // coooow
 // #define MODEL_1 "assets/dfiles/atc.d"         // huuuge model
-// #define MODEL_1 "assets/dfiles/better-ball.d" // very good test
+#define MODEL_1 "assets/dfiles/better-ball.d" // very good test
 // #define MODEL_1 "assets/dfiles/house.d"
 // #define MODEL_1 "assets/dfiles/nteapot6.d"    // looks good
 // #define MODEL_1 "assets/dfiles/cylnd.d"       // good sample
 // #define MODEL_1 "assets/dfiles/cube.d"
 // #define MODEL_1 "assets/dfiles/camaro.d" 
 // #define MODEL_1 "assets/dfiles/bunny.d"       // also large model
-#define TEXTURE_1 "assets/forest.png"         // environment map
+// #define TEXTURE_1 "assets/forest.png"         // environment map
 // #define TEXTURE_1 "assets/street.png"         // environment map
-// #define TEXTURE_1 "assets/grid.png"           // texture
-// #define TEXTURE_1 "assets/gradient.png"       // texture
+// #define TEXTURE_1 "assets/marble.png"         // texture (best)
+#define TEXTURE_1 "assets/sand.png"           // texture (good on sphere)
+// #define TEXTURE_1 "assets/brick.png"          // texture (good on sphere)
 
 
 enum RenderType {
