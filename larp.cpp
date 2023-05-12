@@ -87,7 +87,7 @@ void initScene()
     float k_ambient = 0.2;
     float k_diffuse = 0.5;
     float k_specular = 0.3;
-    float shininess = 4;
+    float shininess = 20;
     assert((k_ambient + k_diffuse + k_specular) <= 1.0);
     g_material0 = Material(material_color0, k_ambient, k_diffuse, k_specular, shininess);
     #ifdef MODEL_1
@@ -213,12 +213,14 @@ int main(int argc, char* args[])
                 // rotate around Z-axis
                 g_model0.Scale(16);
                 g_model0.Rotate(0.0, i, M_PI); 
-                g_model0.Translate(vec3(10,0,2));
+                #ifdef MODEL_1
+                g_model0.Translate(vec3(10,0,0));
+                #endif
 
                 #ifdef MODEL_1
                 g_model1.Scale(16);
                 g_model1.Rotate(0.0, -i, M_PI); 
-                g_model1.Translate(vec3(-10,0,1));
+                g_model1.Translate(vec3(-10,0,0));
                 #endif
                 renderScene();
 

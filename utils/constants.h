@@ -30,11 +30,11 @@
 // #define MODEL_0 "assets/dfiles/jcolumn.d"
 // #define MODEL_0 "assets/dfiles/jbase.d"
 // #define MODEL_0 "assets/dfiles/floor.d"
-#define MODEL_0 "assets/dfiles/cow.d"         // coooow
+// #define MODEL_0 "assets/dfiles/cow.d"         // coooow
 // #define MODEL_0 "assets/dfiles/atc.d"         // huuuge model
 // #define MODEL_0 "assets/dfiles/better-ball.d" // very good test
 // #define MODEL_0 "assets/dfiles/house.d"
-// #define MODEL_0 "assets/dfiles/nteapot6.d"    // looks good
+#define MODEL_0 "assets/dfiles/nteapot6.d"    // looks good
 // #define MODEL_0 "assets/dfiles/cylnd.d"       // good sample
 // #define MODEL_0 "assets/dfiles/cube.d"
 // #define MODEL_0 "assets/dfiles/camaro.d" 
