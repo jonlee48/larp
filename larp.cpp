@@ -21,11 +21,13 @@ float g_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // RGB plus Z buffer
 
 // Scene
 Model g_model0;
-Model g_model1;
 Camera g_camera;
 Light g_light;
 Material g_material0;
+#ifdef MODEL_1
+Model g_model1;
 Material g_material1;
+#endif
 
 
 bool init(void)
@@ -82,21 +84,25 @@ void initScene()
 
     // Init material
     vec3 material_color0 = vec3(1.0, 0.0, 0.0);
-    vec3 material_color1 = vec3(0.0, 0.0, 1.0);
     float k_ambient = 0.2;
     float k_diffuse = 0.5;
     float k_specular = 0.3;
     float shininess = 4;
     assert((k_ambient + k_diffuse + k_specular) <= 1.0);
     g_material0 = Material(material_color0, k_ambient, k_diffuse, k_specular, shininess);
+    #ifdef MODEL_1
+    vec3 material_color1 = vec3(0.0, 0.0, 1.0);
     g_material1 = Material(material_color1, k_ambient, k_diffuse, k_specular, shininess);
+    #endif
 
     // Load objects
     g_model0 = Model();
-    g_model0.LoadModel(MODEL_PATH);
+    g_model0.LoadModel(MODEL_0);
 
+    #ifdef MODEL_1
     g_model1 = Model();
-    g_model1.LoadModel(MODEL_PATH);
+    g_model1.LoadModel(MODEL_1);
+    #endif
 
     
 }
@@ -121,31 +127,45 @@ void renderScene()
     switch (RENDER_TYPE) {
         case WIREFRAME:
             g_model0.DrawEdges(g_camera, g_renderer);
+            #ifdef MODEL_1
             g_model1.DrawEdges(g_camera, g_renderer);
+            #endif
             break;
         case FACES:
             g_model0.DrawFaces(g_camera, g_renderer, g_buffer, false);
+            #ifdef MODEL_1
             g_model1.DrawFaces(g_camera, g_renderer, g_buffer, false);
+            #endif
             break;
         case DEPTH:
             g_model0.DrawFaces(g_camera, g_renderer, g_buffer, true);
+            #ifdef MODEL_1
             g_model1.DrawFaces(g_camera, g_renderer, g_buffer, true);
+            #endif
             break;
         case FLAT:
             g_model0.DrawFlat(g_camera, g_light, g_material0, g_renderer, g_buffer);
+            #ifdef MODEL_1
             g_model1.DrawFlat(g_camera, g_light, g_material1, g_renderer, g_buffer);
+            #endif
             break;
         case GOURAUD:
             g_model0.DrawGouraud(g_camera, g_light, g_material0, g_renderer, g_buffer);
+            #ifdef MODEL_1
             g_model1.DrawGouraud(g_camera, g_light, g_material1, g_renderer, g_buffer);
+            #endif
             break;
         case PHONG:
             g_model0.DrawPhong(g_camera, g_light, g_material0, g_renderer, g_buffer, false);
+            #ifdef MODEL_1
             g_model1.DrawPhong(g_camera, g_light, g_material1, g_renderer, g_buffer, false);
+            #endif
             break;
         case NORMAL:
             g_model0.DrawPhong(g_camera, g_light, g_material0, g_renderer, g_buffer, true);
+            #ifdef MODEL_1
             g_model1.DrawPhong(g_camera, g_light, g_material1, g_renderer, g_buffer, true);
+            #endif
             break;
     }
 
@@ -171,7 +191,9 @@ int main(int argc, char* args[])
         bool quit = false; 
         int framecount = 0;
 
+        #ifdef DEBUG
         Uint32 last_time = SDL_GetTicks();
+        #endif
 
         float i = M_PI;     // rotate
 
@@ -193,9 +215,11 @@ int main(int argc, char* args[])
                 g_model0.Rotate(0.0, i, M_PI); 
                 g_model0.Translate(vec3(10,0,2));
 
+                #ifdef MODEL_1
                 g_model1.Scale(16);
                 g_model1.Rotate(0.0, -i, M_PI); 
                 g_model1.Translate(vec3(-10,0,1));
+                #endif
                 renderScene();
 
                 i += ROTATION_SPEED;
@@ -203,14 +227,15 @@ int main(int argc, char* args[])
             }
 
             #ifdef FRAMES_PER_SECOND
-                SDL_Delay(1000/FRAMES_PER_SECOND);
+            SDL_Delay(1000/FRAMES_PER_SECOND);
             #endif
 
+            #ifdef DEBUG 
             Uint32 current_time = SDL_GetTicks();
             Uint32 diff = current_time - last_time;
-            // if (ANIMATE)
-            //     printf("Time: %d\n", diff);
+            printf("Time: %d\n", diff);
             last_time = current_time;
+            #endif
         }
 	}
     // Free resources and close SDL
