@@ -76,17 +76,17 @@ void end(void)
 void initScene()
 {
     // Init light
-    vec3 light_position = vec3(20.0, 0.0, -40.0);
+    vec3 light_position = vec3(-30.0, -30.0, -10.0);
     vec3 light_color = vec3(1.0, 1.0, 1.0);
     g_light = Light(light_position, light_color);
 
     // Init material
     vec3 material_color0 = vec3(1.0, 0.0, 0.0);
     vec3 material_color1 = vec3(0.0, 0.0, 1.0);
-    float k_ambient = 0.1;
+    float k_ambient = 0.2;
     float k_diffuse = 0.5;
-    float k_specular = 0.4;
-    float shininess = 50;
+    float k_specular = 0.3;
+    float shininess = 4;
     assert((k_ambient + k_diffuse + k_specular) <= 1.0);
     g_material0 = Material(material_color0, k_ambient, k_diffuse, k_specular, shininess);
     g_material1 = Material(material_color1, k_ambient, k_diffuse, k_specular, shininess);
@@ -137,9 +137,15 @@ void renderScene()
             break;
         case GOURAUD:
             g_model0.DrawGouraud(g_camera, g_light, g_material0, g_renderer, g_buffer);
-            // g_model1.DrawGouraud(g_camera, g_light, g_material1, g_renderer, g_buffer);
+            g_model1.DrawGouraud(g_camera, g_light, g_material1, g_renderer, g_buffer);
             break;
         case PHONG:
+            g_model0.DrawPhong(g_camera, g_light, g_material0, g_renderer, g_buffer, false);
+            g_model1.DrawPhong(g_camera, g_light, g_material1, g_renderer, g_buffer, false);
+            break;
+        case NORMAL:
+            g_model0.DrawPhong(g_camera, g_light, g_material0, g_renderer, g_buffer, true);
+            g_model1.DrawPhong(g_camera, g_light, g_material1, g_renderer, g_buffer, true);
             break;
     }
 
