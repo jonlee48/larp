@@ -23,6 +23,7 @@
 // #define RENDER_TYPE FLAT
 // #define RENDER_TYPE GOURAUD
 // #define RENDER_TYPE PHONG
+// #define RENDER_TYPE ENVIRONMENT
 #define RENDER_TYPE TEXTURE
 
 //================================
@@ -51,10 +52,11 @@
 // #define MODEL_0 "assets/dfiles/cube.d"
 // #define MODEL_0 "assets/dfiles/camaro.d" 
 // #define MODEL_0 "assets/dfiles/bunny.d"       // also large model
-#define TEXTURE_0 "assets/forest.png"
-// #define TEXTURE_0 "assets/grid.png"
-// #define TEXTURE_0 "assets/gradient.png"
-// #define TEXTURE_0 "assets/street.png"
+// #define TEXTURE_0 "assets/forest.png"         // environment map
+// #define TEXTURE_0 "assets/street.png"         // environment map
+// #define TEXTURE_0 "assets/marble.png"         // texture
+// #define TEXTURE_0 "assets/dirt.png"         // texture
+#define TEXTURE_0 "assets/brick.png"         // texture
 
 //================================
 // Model 1 (comment out to remove)
@@ -64,7 +66,7 @@
 // #define MODEL_1 "assets/dfiles/jcolumn.d"
 // #define MODEL_1 "assets/dfiles/jbase.d"
 // #define MODEL_1 "assets/dfiles/floor.d"
-#define MODEL_1 "assets/dfiles/cow.d"         // coooow
+// #define MODEL_1 "assets/dfiles/cow.d"         // coooow
 // #define MODEL_1 "assets/dfiles/atc.d"         // huuuge model
 // #define MODEL_1 "assets/dfiles/better-ball.d" // very good test
 // #define MODEL_1 "assets/dfiles/house.d"
@@ -73,10 +75,10 @@
 // #define MODEL_1 "assets/dfiles/cube.d"
 // #define MODEL_1 "assets/dfiles/camaro.d" 
 // #define MODEL_1 "assets/dfiles/bunny.d"       // also large model
-#define TEXTURE_1 "assets/forest.png"
-// #define TEXTURE_1 "assets/grid.png"
-// #define TEXTURE_1 "assets/gradient.png"
-// #define TEXTURE_1 "assets/street.png"
+#define TEXTURE_1 "assets/forest.png"         // environment map
+// #define TEXTURE_1 "assets/street.png"         // environment map
+// #define TEXTURE_1 "assets/grid.png"           // texture
+// #define TEXTURE_1 "assets/gradient.png"       // texture
 
 
 enum RenderType {
@@ -88,4 +90,5 @@ enum RenderType {
     GOURAUD,
     PHONG,
     TEXTURE,
+    ENVIRONMENT,
 };

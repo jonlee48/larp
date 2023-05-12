@@ -67,8 +67,6 @@ vec3 Material::GetTexture(vec3 normal) {
     // Get a latitude wrapping northward from y-, in the range 0-1.
     float latitude = 0.5 + asin(normal.y) / M_PI;
 
-    assert(longitude > 0 && longitude < 1);
-    assert(latitude > 0 && latitude < 1);
     // Scale to integer between texture width and height
     int x = (int)round((this->texture->w - 1) * longitude);
     int y = (int)round((this->texture->h - 1) * latitude);

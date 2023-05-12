@@ -146,7 +146,7 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
     }
 }
 
-void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4], bool render_depth) {
+void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT], bool render_depth) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -269,8 +269,8 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREE
 
                 for (int x = ix0; x <= ix1; x++) {
                     // Only draw point if point is in front of current z value
-                    if (comparefloats(z, buffer[x][y][3], FLOAT_TOL) == -1) {
-                        buffer[x][y][3] = z;
+                    if (comparefloats(z, buffer[x][y], FLOAT_TOL) == -1) {
+                        buffer[x][y] = z;
 
                         // Draw depth map
                         if (render_depth) {
@@ -290,7 +290,7 @@ void Model::DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREE
     }
 }
 
-void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
+void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT]) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -438,8 +438,8 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
 
                 for (int x = ix0; x <= ix1; x++) {
                     // Only draw point if point is in front of current z value
-                    if (comparefloats(z, buffer[x][y][3], FLOAT_TOL) == -1) {
-                        buffer[x][y][3] = z;
+                    if (comparefloats(z, buffer[x][y], FLOAT_TOL) == -1) {
+                        buffer[x][y] = z;
                         SDL_RenderDrawPoint(renderer, x, y);
                     }
                     z += hor_del_z;
@@ -452,7 +452,7 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
     }
 }
 
-void Model::DrawGouraud(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
+void Model::DrawGouraud(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT]) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -639,8 +639,8 @@ void Model::DrawGouraud(Camera &camera, Light &light, Material &material, SDL_Re
 
                 for (int x = ix0; x <= ix1; x++) {
                     // Only draw point if point is in front of current z value
-                    if (comparefloats(z, buffer[x][y][3], FLOAT_TOL) == -1) {
-                        buffer[x][y][3] = z;
+                    if (comparefloats(z, buffer[x][y], FLOAT_TOL) == -1) {
+                        buffer[x][y] = z;
 
                         // Draw RGB scaled by intensity
                         Uint8 r = (Uint8)floor(abs(intensity.x) * 255.0);
@@ -661,7 +661,7 @@ void Model::DrawGouraud(Camera &camera, Light &light, Material &material, SDL_Re
     }
 }
 
-void Model::DrawPhong(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4], bool render_normal) {
+void Model::DrawPhong(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT], bool render_normal) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -844,8 +844,8 @@ void Model::DrawPhong(Camera &camera, Light &light, Material &material, SDL_Rend
 
                 for (int x = ix0; x <= ix1; x++) {
                     // Only draw point if point is in front of current z value
-                    if (comparefloats(z, buffer[x][y][3], FLOAT_TOL) == -1) {
-                        buffer[x][y][3] = z;
+                    if (comparefloats(z, buffer[x][y], FLOAT_TOL) == -1) {
+                        buffer[x][y] = z;
 
                         // Calculate intensity
                         norm = norm.normalize();
@@ -879,7 +879,7 @@ void Model::DrawPhong(Camera &camera, Light &light, Material &material, SDL_Rend
     }
 }
 
-void Model::DrawTexture(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]) {
+void Model::DrawEnvironment(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT]) {
     // Apply transformation matrices to get from
     // Model -> World -> Screen 
 
@@ -1062,8 +1062,8 @@ void Model::DrawTexture(Camera &camera, Light &light, Material &material, SDL_Re
 
                 for (int x = ix0; x <= ix1; x++) {
                     // Only draw point if point is in front of current z value
-                    if (comparefloats(z, buffer[x][y][3], FLOAT_TOL) == -1) {
-                        buffer[x][y][3] = z;
+                    if (comparefloats(z, buffer[x][y], FLOAT_TOL) == -1) {
+                        buffer[x][y] = z;
 
                         // Calculate intensity
                         norm = norm.normalize();
@@ -1092,6 +1092,232 @@ void Model::DrawTexture(Camera &camera, Light &light, Material &material, SDL_Re
     }
 }
 
+void Model::DrawTexture(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT]) {
+    // Apply transformation matrices to get from
+    // Model -> World -> Screen 
+
+    // Calculate transformation matrix
+    mat4 model_matrix = translate_matrix * rotate_matrix * scale_matrix;
+    mat4 view_matrix = camera.GetViewMatrix();
+    mat4 perspective_matrix = camera.GetPerspectiveMatrix();
+    mat4 model_view_matrix = view_matrix * model_matrix;
+    mat4 perspective_transform = perspective_matrix * model_view_matrix;
+
+    // Calculate viewing and lighting direction (assume both are infinitely far away)
+    vec4 _center = model_matrix * vec4(0.0, 0.0, 0.0, 1.0);
+    vec3 center = vec3(_center.x, _center.y, _center.z);
+    vec3 view_direction = (camera.position - center).normalize();
+    vec3 light_direction = light.LightDirection(center);
+
+    // Calculate face and vertex normals
+    std::vector< vec3 > face_normals;
+    std::vector< vec3 > vert_normals;
+    std::vector< vec3 > vert_intensities;
+    face_normals.resize(faces.size());
+    vert_normals.resize(verts.size());
+    vert_intensities.resize(verts.size());
+    for (size_t i = 0; i < faces.size(); i++) {
+        // Calculate surface normal
+        vec4 _v0 = model_matrix * vec4(verts[faces[i].indices[0]], 1.0);
+        vec4 _v1 = model_matrix * vec4(verts[faces[i].indices[1]], 1.0);
+        vec4 _v2 = model_matrix * vec4(verts[faces[i].indices[2]], 1.0);
+        vec3 v0 = vec3(_v0.x, _v0.y, _v0.z);
+        vec3 v1 = vec3(_v1.x, _v1.y, _v1.z);
+        vec3 v2 = vec3(_v2.x, _v2.y, _v2.z);
+        // Note: switching cross product A, B because of some weirdness with LH coordinate system
+        // vec3 surface_normal = ((v2-v1).cross(v0-v1)).normalize();
+        face_normals[i] = ((v0-v1).cross(v2-v1)).normalize();
+    }
+
+    // Calculate verts normals
+    for (size_t i = 0; i < verts.size(); i++) {
+        // Get all faces containing this vertex
+        std::vector<int> faces_index;
+        for (size_t j = 0; j < faces.size(); j++) {
+            // Loop through all indices of the face to check if the vertex is in it
+            for (size_t k = 0; k < faces[j].indices.size(); k++) {
+                if ((unsigned int)faces[j].indices[k] == i) {
+                    faces_index.push_back(j);
+                }
+            }
+        }
+        // Then average their normals
+        vec3 normal_sum(0, 0, 0);
+        for (size_t i = 0; i < faces_index.size(); i++) {
+            normal_sum += face_normals[faces_index[i]];
+        }
+        vert_normals[i] = (normal_sum / faces_index.size()).normalize();
+    }
+
+    // For each face in model
+    for (unsigned int i = 0; i < faces.size(); i++) {
+        // Backface culling 
+        vec4 _normal = model_matrix * vec4(model_face_normals[i], 1.0);
+        vec3 normal = vec3(_normal.x, _normal.y, _normal.z).normalize();
+        vec4 _view = model_matrix * vec4(verts[faces[i].indices[1]], 1.0);
+        vec3 view = (vec3(_view.x, _view.y, _view.z) - camera.position);
+        float dot = normal.dot(view);
+
+        // Visible if dot of normal and line of sight is positive
+        if (BACK_FACE_CULLING && comparefloats(dot,0.0,FLOAT_TOL) <= 0)
+            continue;
+
+        EdgeTable et;
+        // For each edge in face 
+        for (unsigned int k = 0; k < faces[i].indices.size(); k++) {
+
+            // Get perspective transform of edge
+            int _p0 = faces[i].indices[k];
+            int _p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
+            vec4 _h0 = perspective_transform * vec4(verts[_p0], 1.0);
+            vec4 _h1 = perspective_transform * vec4(verts[_p1], 1.0);
+            vec3 e0 = vec3(_h0.x/_h0.w, _h0.y/_h0.w, _h0.z/_h0.w);
+            vec3 e1 = vec3(_h1.x/_h1.w, _h1.y/_h1.w, _h1.z/_h1.w);
+
+            // Scale normalized coordinates [-1, 1] to device coordinates [SCREEN_WIDTH, SCREEN_HEIGHT]
+            float half_width = SCREEN_WIDTH / 2.0;
+            float half_height = SCREEN_HEIGHT / 2.0;
+
+            float x0 = half_width * e0.x + half_width;
+            float x1 = half_width * e1.x + half_width;
+            float y0 = half_height * e0.y + half_height;
+            float y1 = half_height * e1.y + half_height;
+            float z0 = e0.z;
+            float z1 = e1.z;
+
+            // Round points 0 and 1
+            int iy0 = (int)round(y0);
+            int iy1 = (int)round(y1);
+
+            float inv_m = (x1 - x0)/(y1 - y0);
+
+            // Add only non-horizontal edges to ET
+            if (comparefloats(iy0, iy1, FLOAT_TOL) != 0) {
+
+                // Assume convex polygon - don't shorten edges
+
+                // Get vertex normal at ends of edge
+                vec3 vert_norm0 = vert_normals[_p0];
+                vec3 vert_norm1 = vert_normals[_p1];
+
+                // Add to edge table
+                int y_max;      // higher y value
+                int y_min;      // lower y value
+                float x_min;    // x value at lower edge
+                float z_min;    // z value at lower edge
+                float del_z;    // rate of change from z_min
+                vec3 vec_min;
+                vec3 del_vec;
+                vec3 vert_min;
+                vec3 del_vert;
+                if (iy0 < iy1) {
+                    // p0 is lower than p1
+                    y_max = iy1;
+                    y_min = iy0;
+                    x_min = x0;
+                    z_min = z0;
+                    del_z = (z1-z0)/(y1-y0);
+                    vec_min = vert_norm0;
+                    del_vec = (1.0/(y1-y0))*(vert_norm1 - vert_norm0);
+                    vert_min = verts[_p0];
+                    del_vert = (1.0/(y1-y0))*(verts[_p1] - verts[_p0]);
+                }
+                else {
+                    // p1 is lower than p0
+                    y_max = iy0;
+                    y_min = iy1;
+                    x_min = x1;
+                    z_min = z1;
+                    del_z = (z0-z1)/(y0-y1);
+                    vec_min = vert_norm1;
+                    del_vec = (1.0/(y0-y1))*(vert_norm0 - vert_norm1);
+                    vert_min = verts[_p1];
+                    del_vert = (1.0/(y0-y1))*(verts[_p0] - verts[_p1]);
+                }
+
+                Edge* e = new Edge(y_max, x_min, inv_m, z_min, del_z, vec_min, del_vec, vert_min, del_vert);
+                et.InsertEdge(y_min,e);
+            }
+        }
+
+        // Create active edge table 
+        ActiveEdgeTable aet;
+            
+        // Start at the first scanline containing an edge
+        // Stop when ET and AET are empty
+        for (int y = et.scanlines.begin()->first; (!et.IsEmpty() || !aet.IsEmpty()) && y < SCREEN_HEIGHT; y++) {
+            // Move edges from ET to AET
+            Edge* e;
+            while((e = et.RemoveEdge(y)) != nullptr) {
+                // AET is keyed by x_int
+                int x_int = (int)round(e->x_min);
+                aet.InsertEdge(x_int, e);
+            }
+
+            // Draw lines between pairs of edges in AET
+            assert((*aet.aet).size() % 2 == 0);
+            std::multimap<int,Edge*>::iterator it;
+            for (it = (*aet.aet).begin(); it != (*aet.aet).end(); it++) {
+                int ix0 = it->first;
+                Edge *e0 = it->second;
+                it++;
+                int ix1 = it->first;
+                Edge *e1 = it->second;
+
+                assert(ix0 >= 0 && ix0 < SCREEN_WIDTH);
+                assert(ix1 >= 0 && ix1 < SCREEN_WIDTH);
+
+                // Fill in points between and including edges
+                float z0 = e0->z_min;
+                float z1 = e1->z_min;
+                float hor_del_z = (z1 - z0)/(ix1 - ix0);
+                float z = z0;
+
+                // Interpolate vertex intensity horizontally
+                vec3 start = e0->vec_min;
+                vec3 end = e1->vec_min;
+                vec3 hor_del_vec = (1.0/(ix1 - ix0))*(end - start);
+                vec3 norm = start;
+
+                // Interpolate vertex position horizontally
+                vec3 v_start = e0->vert_min;
+                vec3 v_end = e1->vert_min;
+                vec3 hor_del_vert = (1.0/(ix1 - ix0))*(v_end - v_start);
+                vec3 vert = v_start;
+
+                for (int x = ix0; x <= ix1; x++) {
+                    // Only draw point if point is in front of current z value
+                    if (comparefloats(z, buffer[x][y], FLOAT_TOL) == -1) {
+                        buffer[x][y] = z;
+
+                        // Calculate intensity
+                        norm = norm.normalize();
+
+                        // Get corresponding color from texture map
+                        vert = vert.normalize();
+                        vec3 texture = material.GetTexture(vert);
+
+                        vec3 intensity = material.PhongIllumination(texture, view_direction, norm, light_direction, light); 
+
+                        // Draw RGB based on intensity
+                        Uint8 r = (Uint8)floor(abs(intensity.x) * 255.0);
+                        Uint8 g = (Uint8)floor(abs(intensity.y) * 255.0);
+                        Uint8 b = (Uint8)floor(abs(intensity.z) * 255.0);
+
+                        SDL_SetRenderDrawColor(renderer, r, g, b, 0xFF);
+                        SDL_RenderDrawPoint(renderer, x, y);
+                    }
+                    z += hor_del_z;
+                    norm = norm + hor_del_vec;
+                    vert = vert + hor_del_vert;
+                }
+            }
+
+            // Update edges
+            aet.UpdateEdges(y);
+        }
+    }
+}
 //=============================================
 // Resize Model
 //=============================================

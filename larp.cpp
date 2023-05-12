@@ -18,7 +18,7 @@
 // Globals
 SDL_Window *g_window = NULL;        // The window we'll be rendering to
 SDL_Renderer *g_renderer = NULL;    // The window renderer
-float g_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]; // RGB plus Z buffer
+float g_buffer[SCREEN_WIDTH][SCREEN_HEIGHT]; // Z buffer
 
 // Scene
 Model g_model0;
@@ -99,7 +99,7 @@ void initScene()
     float shininess = 30;
     // assert((k_ambient + k_diffuse + k_specular) <= 1.0);
     g_material0 = Material(material_color0, k_ambient, k_diffuse, k_specular, shininess);
-    if (RENDER_TYPE == TEXTURE) {
+    if (RENDER_TYPE == TEXTURE || RENDER_TYPE == ENVIRONMENT) {
         if(!g_material0.LoadTexture(TEXTURE_0)) {
             printf("Error loading texture\n");
             exit(1);
@@ -134,10 +134,7 @@ void renderScene()
     // Clear the z buffer 
     for (int x = 0; x < SCREEN_WIDTH; x++) {
         for (int y = 0; y < SCREEN_HEIGHT; y++) {
-            g_buffer[x][y][0] = 0.0;
-            g_buffer[x][y][1] = 0.0;
-            g_buffer[x][y][2] = 0.0;
-            g_buffer[x][y][3] = 1.0;
+            g_buffer[x][y] = 1.0;
         }
     }
 
@@ -183,6 +180,12 @@ void renderScene()
             g_model0.DrawPhong(g_camera, g_light, g_material0, g_renderer, g_buffer, true);
             #ifdef MODEL_1
             g_model1.DrawPhong(g_camera, g_light, g_material1, g_renderer, g_buffer, true);
+            #endif
+            break;
+        case ENVIRONMENT:
+            g_model0.DrawEnvironment(g_camera, g_light, g_material0, g_renderer, g_buffer);
+            #ifdef MODEL_1
+            g_model1.DrawEnvironment(g_camera, g_light, g_material1, g_renderer, g_buffer);
             #endif
             break;
         case TEXTURE:

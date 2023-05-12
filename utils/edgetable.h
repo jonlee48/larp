@@ -16,11 +16,15 @@ public:
     Edge *next;     // next edge in EdgeTable bucket
     vec3 vec_min;   // norm or intensity at low edge
     vec3 del_vec;   // rate of change in vec norm or intensity
+    vec3 vert_min;   // vertex position at low edge
+    vec3 del_vert;   // rate of change in vertex position
 
 public:
     Edge(int y_max, float x_min, float inv_m, float z_min, float del_z); 
 
     Edge(int y_max, float x_min, float inv_m, float z_min, float del_z, vec3 vec_min, vec3 del_vec); 
+
+    Edge(int y_max, float x_min, float inv_m, float z_min, float del_z, vec3 vec_min, vec3 del_vec, vec3 vert_min, vec3 del_vert); 
 
     ~Edge() {}
 };
