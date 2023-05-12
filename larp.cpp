@@ -108,7 +108,7 @@ void initScene()
     #ifdef MODEL_1
     vec3 material_color1 = vec3(0.0, 0.0, 1.0);
     g_material1 = Material(material_color1, k_ambient, k_diffuse, k_specular, shininess);
-    if (RENDER_TYPE == TEXTURE) {
+    if (RENDER_TYPE == TEXTURE || RENDER_TYPE == ENVIRONMENT) {
         g_material1.LoadTexture(TEXTURE_1);
     }
     #endif

@@ -52,9 +52,9 @@
 // #define MODEL_0 "assets/dfiles/cube.d"
 // #define MODEL_0 "assets/dfiles/camaro.d" 
 // #define MODEL_0 "assets/dfiles/bunny.d"       // also large model
-// #define TEXTURE_0 "assets/forest.png"         // environment map
+#define TEXTURE_0 "assets/forest.png"         // environment map
 // #define TEXTURE_0 "assets/street.png"         // environment map
-#define TEXTURE_0 "assets/marble.png"         // texture (looks the best)
+// #define TEXTURE_0 "assets/marble.png"         // texture (looks the best)
 // #define TEXTURE_0 "assets/sand.png"           // texture (good on sphere)
 // #define TEXTURE_0 "assets/brick.png"          // texture (good on sphere)
 
@@ -76,9 +76,9 @@
 // #define MODEL_1 "assets/dfiles/camaro.d" 
 // #define MODEL_1 "assets/dfiles/bunny.d"       // also large model
 // #define TEXTURE_1 "assets/forest.png"         // environment map
-// #define TEXTURE_1 "assets/street.png"         // environment map
+#define TEXTURE_1 "assets/street.png"         // environment map
 // #define TEXTURE_1 "assets/marble.png"         // texture (best)
-#define TEXTURE_1 "assets/sand.png"           // texture (good on sphere)
+// #define TEXTURE_1 "assets/sand.png"           // texture (good on sphere)
 // #define TEXTURE_1 "assets/brick.png"          // texture (good on sphere)
 
 

@@ -57,15 +57,15 @@ bool Material::LoadTexture(const char* path) {
     return true;
 }
 
-vec3 Material::GetTexture(vec3 normal) {
+vec3 Material::GetTexture(vec3 sphere) {
     // Return a vec3 corresponding to rgb intensity 0 to 1
 
     // Map normal into latitude longitude
 
     // Get a longitude wrapping eastward from x-, in the range 0-1.
-    float longitude = 0.5 - atan2(normal.z, normal.x) / (2.0 * M_PI);
+    float longitude = 0.5 - atan2(sphere.z, sphere.x) / (2.0 * M_PI);
     // Get a latitude wrapping northward from y-, in the range 0-1.
-    float latitude = 0.5 + asin(normal.y) / M_PI;
+    float latitude = 0.5 + asin(sphere.y) / M_PI;
 
     // Scale to integer between texture width and height
     int x = (int)round((this->texture->w - 1) * longitude);
