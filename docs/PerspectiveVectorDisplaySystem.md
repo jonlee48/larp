@@ -93,11 +93,11 @@ void Model::DrawEdges(Camera &camera, SDL_Renderer *renderer) {
             int p1 = faces[i].indices[(k + 1) % faces[i].indices.size()];
 			
             // Apply model_view_matrix
-            vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0f);
-            vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0f);
+            vec4 h0 = model_view_matrix * vec4(verts[p0], 1.0);
+            vec4 h1 = model_view_matrix * vec4(verts[p1], 1.0);
 
             // Check if the face normal is not backfacing 
-            vec4 n4 = model_view_matrix * vec4(face_normals[i], 1.0f);
+            vec4 n4 = model_view_matrix * vec4(face_normals[i], 1.0);
             vec3 normal = vec3(n4.x, n4.y, n4.z).normalize();
             if (normal.z < 0) {            {
                 // Render the line 

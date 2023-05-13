@@ -3,6 +3,7 @@
 #include "vec3.h"
 #include "camera.h"
 #include "constants.h"
+#include "illumination.h"
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,8 +31,7 @@ public:
 class Model {
 public:
     std::vector< vec3 > verts;
-    std::vector< vec3 > verts_normals;
-    std::vector< vec3 > face_normals;
+    std::vector< vec3 > backface_normals;
     std::vector< vec3 > face_colors;
     std::vector< ModelFace > faces;
     mat4 model_matrix;
@@ -58,7 +58,13 @@ public:
     //=============================================
     void DrawEdges(Camera &camera, SDL_Renderer *renderer);
 
-    void DrawFaces(Camera &camera, SDL_Renderer *renderer, float z_buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
+    void DrawFaces(Camera &camera, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4], bool render_depth);
+
+    void DrawFlat(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
+
+    void DrawGouraud(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4]);
+
+    void DrawPhong(Camera &camera, Light &light, Material &material, SDL_Renderer *renderer, float buffer[SCREEN_WIDTH][SCREEN_HEIGHT][4], bool render_normal);
 
     //=============================================
     // scale the model into the range of [ -0.9, 0.9 ]

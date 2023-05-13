@@ -1,4 +1,5 @@
 #pragma once
+#include "vec3.h"
 #include <map>
 
 //================================
@@ -8,14 +9,18 @@
 class Edge {
 public:
     int y_max;      // scanline of high edge
-    float x_min;   // x value at low edge
-    float inv_m;   // 1/m slope
-    float z_min;   // z value at low edge
-    float del_z;   // rate of change from z_min
+    float x_min;    // x value at low edge
+    float inv_m;    // 1/m slope
+    float z_min;    // z value at low edge
+    float del_z;    // rate of change from z_min
     Edge *next;     // next edge in EdgeTable bucket
+    vec3 vec_min;   // norm or intensity at low edge
+    vec3 del_vec;   // rate of change in vec norm or intensity
 
 public:
     Edge(int y_max, float x_min, float inv_m, float z_min, float del_z); 
+
+    Edge(int y_max, float x_min, float inv_m, float z_min, float del_z, vec3 vec_min, vec3 del_vec); 
 
     ~Edge() {}
 };
