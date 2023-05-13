@@ -26,6 +26,19 @@ Edge::Edge(int y_max, float x_min, float inv_m, float z_min, float del_z, vec3 v
     this->next = nullptr;
 }
 
+Edge::Edge(int y_max, float x_min, float inv_m, float z_min, float del_z, vec3 vec_min, vec3 del_vec, vec3 vert_min, vec3 del_vert) {
+    this->y_max = y_max;
+    this->x_min = x_min;
+    this->inv_m= inv_m;
+    this->z_min = z_min;
+    this->del_z = del_z;
+    this->vec_min = vec_min;
+    this->del_vec = del_vec;
+    this->vert_min = vert_min;
+    this->del_vert = del_vert;
+    this->next = nullptr;
+
+}
 //=============================================
 // Edge Table
 //=============================================
@@ -159,6 +172,7 @@ void ActiveEdgeTable::UpdateEdges(int scanline) {
             cur->x_min += cur->inv_m;
             cur->z_min += cur->del_z;
             cur->vec_min = cur->vec_min + cur->del_vec;
+            cur->vert_min = cur->vert_min + cur->del_vert;
             int x_int = (int)round(cur->x_min);
             (*new_aet).insert(std::pair<int,Edge*>(x_int, cur));
         }
