@@ -1,6 +1,6 @@
 # Compile and link FILES into executable BIN
 FILES = $(wildcard *.cpp)
-UTILS = $(wildcard utils/*.cpp)
+UTILS = $(wildcard lib/*.cpp)
 BIN = larp
 
 # Compile and link SAMPLE_FILES

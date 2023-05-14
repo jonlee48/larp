@@ -1,13 +1,13 @@
 #define _USE_MATH_DEFINES
 
 #include "larp.h"
-#include "utils/mat4.h"
-#include "utils/vec3.h"
-#include "utils/model.h"
-#include "utils/camera.h"
-#include "utils/constants.h"
-#include "utils/utils.h"
-#include "utils/illumination.h"
+#include "lib/mat4.h"
+#include "lib/vec3.h"
+#include "lib/model.h"
+#include "lib/camera.h"
+#include "lib/constants.h"
+#include "lib/utils.h"
+#include "lib/illumination.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdio.h>

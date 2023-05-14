@@ -7,7 +7,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define ASPECT_RATIO SCREEN_WIDTH/SCREEN_HEIGHT
-#define WINDOW_NAME "Texture Mapping"
+#define WINDOW_NAME "Rendering Pipeline"
 // #define FRAMES_PER_SECOND 60
 // #define DEBUG 1
 #define ANIMATE 1
