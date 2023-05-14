@@ -93,11 +93,34 @@ void initScene()
 
     // Init material
     vec3 material_color0 = vec3(1.0, 0.0, 0.0);
-    float k_ambient = 0.3;
-    float k_diffuse = 0.2;
-    float k_specular = 0.5;
-    float shininess = 30;
-    // assert((k_ambient + k_diffuse + k_specular) <= 1.0);
+    float k_ambient, k_diffuse, k_specular, shininess;
+    switch(MATERIAL_TYPE) {
+        case METAL:
+            k_ambient = 0.45;
+            k_diffuse = 0.05;
+            k_specular = 0.5;
+            shininess = 30;
+            break;
+        case PLASTIC:
+            k_ambient = 0.3;
+            k_diffuse = 0.3;
+            k_specular = 0.4;
+            shininess = 30;
+            break;
+        case MATTE:
+            k_ambient = 0.4;
+            k_diffuse = 0.5;
+            k_specular = 0.1;
+            shininess = 3;
+            break;
+        case MARBLE:
+            k_ambient = 0.4;
+            k_diffuse = 0.3;
+            k_specular = 0.3;
+            shininess = 15;
+            break;
+    }
+    assert((k_ambient + k_diffuse + k_specular) <= 1.0);
     g_material0 = Material(material_color0, k_ambient, k_diffuse, k_specular, shininess);
     if (RENDER_TYPE == TEXTURE || RENDER_TYPE == ENVIRONMENT) {
         if(!g_material0.LoadTexture(TEXTURE_0)) {
