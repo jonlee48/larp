@@ -38,4 +38,6 @@ public:
     vec3 GetTexture(vec3 normal);
 
     vec3 PhongIllumination(vec3 surface_color, vec3 view, vec3 normal, vec3 light_direction, Light light);
+
+    vec3 CartoonIllumination(vec3 normal, vec3 light_direction);
 };

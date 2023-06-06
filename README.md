@@ -2,7 +2,7 @@
 
 lame :speak_no_evil: rendering pipeline - a scratch built 3D rendering pipeline using only c++ and Simple DirectMedia Layer (SDL).
 
-![Animation](docs/PerspectiveVectorDisplay.gif)
+![Animation](docs/final_results.gif)
 
 ## Installation
 
@@ -22,15 +22,7 @@ make
 ./larp
 ```
 
-You can also run the samples.
-`make samples`
-- `./bin/01_bmp` Display an image from bmp format.
-- `./bin/02_png` Display an image from png format.
-- `./bin/03_texture` Display an image as a texture with HW acceleration. Kinda buggy when dragging windows. Had to put rendering in event loop. I think it's related to this [issue](https://github.com/libsdl-org/SDL/issues/1059#issuecomment-793116234).
-- `./bin/04_geometry` Display some rectangles and lines in the window.
-
 ## TODO
--[ ] Scan conversion
 -[ ] Makefile - o files and linker
 -[ ] Makefile - does not detect changes to h files
 
@@ -42,13 +34,10 @@ To check for memory leaks, run with Valgrind suppression file because SDL has le
 valgrind --gen-suppressions=all --suppressions=./linux_sdl_gl.sup --leak-check=full --show-leak-kinds=all ./larp
 ```
 
-Interesting reads
-- [https://stackoverflow.com/questions/1997171/why-does-valgrind-say-basic-sdl-program-is-leaking-memory](https://stackoverflow.com/questions/1997171/why-does-valgrind-say-basic-sdl-program-is-leaking-memory)
-- [https://stackoverflow.com/questions/5134891/how-do-i-use-valgrind-to-find-memory-leaks](https://stackoverflow.com/questions/5134891/how-do-i-use-valgrind-to-find-memory-leaks)
-
-
 ## Resources
 
+- [https://stackoverflow.com/questions/1997171/why-does-valgrind-say-basic-sdl-program-is-leaking-memory](https://stackoverflow.com/questions/1997171/why-does-valgrind-say-basic-sdl-program-is-leaking-memory)
+- [https://stackoverflow.com/questions/5134891/how-do-i-use-valgrind-to-find-memory-leaks](https://stackoverflow.com/questions/5134891/how-do-i-use-valgrind-to-find-memory-leaks)
 - [Simple DirectMedia Layer (SDL Wiki)](https://wiki.libsdl.org/SDL2/FrontPage)
 - [SDL Dynamic API](https://github.com/libsdl-org/SDL/blob/main/docs/README-dynapi.md)
 - [SDL Tutorials](http://lazyfoo.net/tutorials/SDL/index.php)

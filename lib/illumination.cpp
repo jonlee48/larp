@@ -111,3 +111,30 @@ vec3 Material::PhongIllumination(vec3 surface_color, vec3 view, vec3 normal, vec
     vec3 i_total = i_ambient + i_diffuse + i_specular;
     return i_total;
 }
+
+vec3 Material::CartoonIllumination(vec3 normal, vec3 light_direction) {
+    // Assume light and surface color are between 0 and 1
+    // Assume V, N, L are normalized
+    vec3 N = normal;
+    vec3 L = light_direction;
+
+    // calculate diffuse term
+    float diffuse = std::max(N.dot(L), 0.0f);
+
+    // set color based on intensity of diffuse term
+    vec3 i_diffuse;
+    if (diffuse > 0.7) {
+        i_diffuse = vec3(247/255.0,181/255.0,56/255.0);
+    }
+    else if (diffuse > 0.5) {
+        i_diffuse = vec3(216/255.0,87/255.0,42/255.0);
+    }
+    else if (diffuse > 0.1) {
+        i_diffuse = vec3(195/255.0,47/255.0,39/255.0);
+    }
+    else {
+        i_diffuse = vec3(120/255.0,1/255.0,22/255.0);
+    }
+
+    return i_diffuse;
+}

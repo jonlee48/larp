@@ -92,7 +92,7 @@ void initScene()
     g_light = Light(light_position, light_color);
 
     // Init material
-    vec3 material_color0 = vec3(1.0, 0.0, 0.0);
+    vec3 material_color0 = vec3(1.0, 1.0, 1.0);
     float k_ambient, k_diffuse, k_specular, shininess;
     switch(MATERIAL_TYPE) {
         case METAL:
@@ -118,6 +118,8 @@ void initScene()
             k_diffuse = 0.3;
             k_specular = 0.3;
             shininess = 15;
+            break;
+        case CARTOON:
             break;
     }
     assert((k_ambient + k_diffuse + k_specular) <= 1.0);

@@ -332,7 +332,14 @@ void Model::DrawFlat(Camera &camera, Light &light, Material &material, SDL_Rende
         vec3 surface_normal = ((v0-v1).cross(v2-v1)).normalize();
 
         // Calculate intensity
-        vec3 intensity = material.PhongIllumination(material.color, view_direction, surface_normal, light_direction, light);
+        vec3 intensity;
+        if (MATERIAL_TYPE == CARTOON) {
+            intensity = material.CartoonIllumination(surface_normal, light_direction); 
+        }
+        else {
+            intensity = material.PhongIllumination(material.color, view_direction, surface_normal, light_direction, light);
+        }
+        
 
         Uint8 r = (Uint8)floor(abs(intensity.x) * 255.0);
         Uint8 g = (Uint8)floor(abs(intensity.y) * 255.0);
@@ -509,7 +516,12 @@ void Model::DrawGouraud(Camera &camera, Light &light, Material &material, SDL_Re
         vert_normals[i] = (normal_sum / faces_index.size()).normalize();
 
         // Calculate intensity
-        vert_intensities[i] = material.PhongIllumination(material.color, view_direction, vert_normals[i], light_direction, light); 
+        if (MATERIAL_TYPE == CARTOON) {
+            vert_intensities[i] = material.CartoonIllumination(vert_normals[i], light_direction); 
+        }
+        else {
+            vert_intensities[i] = material.PhongIllumination(material.color, view_direction, vert_normals[i], light_direction, light); 
+        }
     }
 
     // For each face in model
@@ -849,7 +861,13 @@ void Model::DrawPhong(Camera &camera, Light &light, Material &material, SDL_Rend
 
                         // Calculate intensity
                         norm = norm.normalize();
-                        vec3 intensity = material.PhongIllumination(material.color, view_direction, norm, light_direction, light); 
+                        vec3 intensity;
+                        if (MATERIAL_TYPE == CARTOON) {
+                            intensity = material.CartoonIllumination(norm, light_direction); 
+                        }
+                        else {
+                            intensity = material.PhongIllumination(material.color, view_direction, norm, light_direction, light); 
+                        }
 
                         Uint8 r, g, b;
                         if (!render_normal) {

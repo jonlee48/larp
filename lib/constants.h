@@ -22,9 +22,9 @@
 // #define RENDER_TYPE NORMAL
 // #define RENDER_TYPE FLAT
 // #define RENDER_TYPE GOURAUD
-// #define RENDER_TYPE PHONG
+#define RENDER_TYPE PHONG
 // #define RENDER_TYPE ENVIRONMENT
-#define RENDER_TYPE TEXTURE
+// #define RENDER_TYPE TEXTURE
 
 //================================
 // Material Style
@@ -32,7 +32,8 @@
 // #define MATERIAL_TYPE METAL
 // #define MATERIAL_TYPE PLASTIC
 // #define MATERIAL_TYPE MATTE
-#define MATERIAL_TYPE MARBLE
+// #define MATERIAL_TYPE MARBLE
+#define MATERIAL_TYPE CARTOON
 
 //================================
 // Render Settings
@@ -107,4 +108,5 @@ enum MaterialType {
     PLASTIC,
     MATTE,
     MARBLE,
+    CARTOON
 };
