@@ -2,7 +2,7 @@
 
 lame :speak_no_evil: rendering pipeline - a scratch built 3D rendering pipeline using only c++ and Simple DirectMedia Layer (SDL).
 
-![Animation](docs/final_results.gif)
+![Animation](docs/final_result.gif)
 
 ## Installation
 
